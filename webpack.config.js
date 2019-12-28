@@ -9,6 +9,9 @@ module.exports = {
 		filename: 'editor.js',
 		path: path.resolve( __dirname, 'assets/editor' ),
 	},
+	performance: {
+		hints: false,
+	},
 	plugins: [
 		new HtmlWebpackPlugin( {
 			inlineSource: '.(js|css)$',
