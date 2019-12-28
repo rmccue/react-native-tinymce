@@ -1,3 +1,4 @@
+import * as Font from 'expo-font';
 import React from 'react';
 import {
 	SafeAreaView,
@@ -18,14 +19,31 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-export default function App() {
-	return (
-		<SafeAreaView style={ styles.safeArea }>
-			<View
-				style={ styles.container }
-			>
-				<Editor />
-			</View>
-		</SafeAreaView>
-	);
+export default class App extends React.Component {
+	state = {
+		loadedSymbols: false,
+	}
+
+	componentDidMount() {
+		Font.loadAsync( {
+			'sfsymbols': require( './assets/SFSymbolsFallback.ttf' ),
+		} ).then( () => {
+			this.setState( { loadedSymbols: true } );
+		} );
+	}
+	render() {
+		if ( ! this.state.loadedSymbols ) {
+			return null;
+		}
+
+		return (
+			<SafeAreaView style={ styles.safeArea }>
+				<View
+					style={ styles.container }
+				>
+					<Editor />
+				</View>
+			</SafeAreaView>
+		);
+	}
 }
