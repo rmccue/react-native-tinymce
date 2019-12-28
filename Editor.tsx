@@ -2,10 +2,12 @@ import { Asset } from 'expo-asset';
 import React from 'react';
 import {
 	Button,
+	StyleProp,
 	StyleSheet,
-	View
+	View,
+	ViewStyle,
 } from 'react-native';
-import { KeyboardAccessoryView } from 'react-native-keyboard-accessory'
+import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 import { WebView } from 'react-native-webview';
 
 import Toolbar from './Toolbar';
@@ -40,6 +42,7 @@ interface EditorChildrenProps {
 
 interface EditorProps {
 	children( props: EditorChildrenProps ): JSX.Element;
+	toolbarStyle: StyleProp<ViewStyle>;
 }
 
 export default class Editor extends React.Component<EditorProps, EditorState> {
@@ -50,6 +53,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 				onPress={ onShowFormat }
 			/>
 		),
+		toolbarStyle: null,
 	}
 
 	state: EditorState = {
@@ -130,7 +134,6 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 	}
 
 	render() {
-		this.props;
 		const { children } = this.props;
 
 		return (
@@ -148,6 +151,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 				</View>
 				<Toolbar
 					status={ this.state.textStatus }
+					style={ this.props.toolbarStyle }
 					visible={ this.state.showingFormat }
 					onCommand={ this.onCommand }
 					onDismiss={ this.onDismissToolbar }

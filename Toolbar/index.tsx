@@ -2,10 +2,12 @@ import React from 'react';
 import {
 	LayoutAnimation,
 	ScrollView,
+	StyleProp,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	View,
+	ViewStyle,
 } from 'react-native';
 
 import Group from './Group';
@@ -68,6 +70,7 @@ const styles = StyleSheet.create( {
 
 interface ToolbarProps {
 	status: EditorStatus;
+	style: StyleProp<ViewStyle>;
 	visible: boolean;
 	onCommand: ( ...args: Array<string | boolean | null> ) => void;
 	onDismiss: () => void;
@@ -86,11 +89,12 @@ export default class Toolbar extends React.Component<ToolbarProps> {
 	}
 
 	render() {
-		const { status, onCommand, onDismiss, onFormat } = this.props;
+		const { status, style, onCommand, onDismiss, onFormat } = this.props;
 
 		const combinedStyle = [
 			styles.container,
 			this.props.visible ? styles.visible : styles.hidden,
+			style,
 		];
 
 		return (
