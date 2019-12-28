@@ -11,6 +11,10 @@ let status = {
 	underline: false,
 	strikethrough: false,
 	paraType: 'p',
+	undo: {
+		hasUndo: false,
+		hasRedo: false,
+	},
 };
 const sendStatus = () => {
 	if ( window.ReactNativeWebView ) {
@@ -111,5 +115,17 @@ tinymce.init( {
 			};
 			sendStatus();
 		} );
+	} );
+
+	// Subscribe to undo/redo state.
+	editor.on( 'Undo Redo AddUndo TypingUndo ClearUndos SwitchMode', () => {
+		status = {
+			...status,
+			undo: {
+				hasUndo: editor.undoManager.hasUndo(),
+				hasRedo: editor.undoManager.hasRedo(),
+			},
+		};
+		sendStatus();
 	} );
 } );

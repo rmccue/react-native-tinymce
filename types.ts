@@ -4,6 +4,10 @@ export interface EditorStatus {
 	underline: boolean;
 	strikethrough: boolean;
 	paraType: 'p' | 'blockquote' | 'h1' | 'h2' | 'pre' | 'ul' | 'ol';
+	undo: {
+		hasUndo: boolean,
+		hasRedo: boolean,
+	},
 }
 
 export interface EditorEvent {

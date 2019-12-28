@@ -60,6 +60,10 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 			underline: false,
 			strikethrough: false,
 			paraType: 'p',
+			undo: {
+				hasUndo: false,
+				hasRedo: false,
+			},
 		},
 	}
 
