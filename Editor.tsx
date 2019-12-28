@@ -1,7 +1,6 @@
 import { Asset } from 'expo-asset';
 import React from 'react';
 import {
-	Button,
 	StyleProp,
 	StyleSheet,
 	View,
@@ -11,6 +10,7 @@ import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 import { WebView } from 'react-native-webview';
 
 import Formatter from './Formatter';
+import Toolbar from './Toolbar';
 import { EditorStatus, UpdateStatusEvent } from './types';
 
 const editorHtml = require( './assets/editor/editor.html' );
@@ -47,12 +47,7 @@ interface EditorProps {
 
 export default class Editor extends React.Component<EditorProps, EditorState> {
 	static defaultProps = {
-		children: ( { onShowFormat } ) => (
-			<Button
-				title="Format"
-				onPress={ onShowFormat }
-			/>
-		),
+		children: props => <Toolbar { ...props } />,
 		toolbarStyle: null,
 	}
 
