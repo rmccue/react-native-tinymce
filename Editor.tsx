@@ -37,6 +37,7 @@ interface EditorState {
 }
 
 export interface EditorChildrenProps {
+	onCommand( ...args ): void;
 	onShowFormat(): void;
 }
 
@@ -160,6 +161,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 						style={ styles.toolbar }
 					>
 						{ children( {
+							onCommand: this.onCommand,
 							onShowFormat: this.onShowFormat,
 						} ) }
 					</KeyboardAccessoryView>

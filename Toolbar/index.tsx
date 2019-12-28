@@ -6,6 +6,7 @@ import {
 
 import { EditorChildrenProps } from '../Editor';
 import FormatButton from './FormatButton';
+import UndoRedoButtons from './UndoRedoButtons';
 
 const styles = StyleSheet.create( {
 	container: {
@@ -17,6 +18,9 @@ const styles = StyleSheet.create( {
 export default function Toolbar( props: EditorChildrenProps ) {
 	return (
 		<View style={ styles.container }>
+			<UndoRedoButtons
+				{ ...props }
+			/>
 			<FormatButton
 				{ ...props }
 			/>
