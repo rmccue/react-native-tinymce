@@ -10,7 +10,7 @@ import {
 import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 import { WebView } from 'react-native-webview';
 
-import Toolbar from './Toolbar';
+import Formatter from './Formatter';
 import { EditorStatus, UpdateStatusEvent } from './types';
 
 const editorHtml = require( './assets/editor/editor.html' );
@@ -149,7 +149,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 						onMessage={ this.onMessage }
 					/>
 				</View>
-				<Toolbar
+				<Formatter
 					status={ this.state.textStatus }
 					style={ this.props.toolbarStyle }
 					visible={ this.state.showingFormat }
