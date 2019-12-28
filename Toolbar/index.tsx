@@ -52,6 +52,12 @@ const styles = StyleSheet.create( {
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
+	closer: {
+		paddingLeft: 10,
+		alignSelf: 'stretch',
+		alignItems: 'center',
+		flexDirection: 'row',
+	},
 	paraType: {
 		flex: 1,
 	},
