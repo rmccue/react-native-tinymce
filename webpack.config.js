@@ -17,6 +17,15 @@ module.exports = {
 			inlineSource: '.(js|css)$',
 			filename: 'editor.html',
 			template: 'assets-src/editor.html',
+			minify: {
+				collapseWhitespace: true,
+				minifyCSS: true,
+				removeComments: true,
+				removeRedundantAttributes: true,
+				removeScriptTypeAttributes: true,
+				removeStyleLinkTypeAttributes: true,
+				useShortDoctype: true,
+			},
 		} ),
 		new HtmlWebpackInlineSourcePlugin(),
 
