@@ -87,8 +87,13 @@ export default function Toolbar( props: ToolbarProps ) {
 				<TouchableOpacity
 					onPress={ onDismiss }
 				>
-					<Text>
-						Close
+					<Text
+						style={ {
+							fontFamily: 'sfsymbols',
+							fontSize: 18,
+						} }
+					>
+						􀆄
 					</Text>
 				</TouchableOpacity>
 			</View>
@@ -96,27 +101,27 @@ export default function Toolbar( props: ToolbarProps ) {
 				<GroupButton
 					first
 					selected={ status.bold }
-					text="B"
-					textStyle={ { fontWeight: 'bold' } }
+					text="􀅓"
+					textStyle={ { fontFamily: 'sfsymbols' } }
 					onPress={ () => onCommand( 'Bold' ) }
 				/>
 				<GroupButton
 					selected={ status.italic }
-					text="I"
-					textStyle={ { fontStyle: 'italic' } }
+					text="􀅔"
+					textStyle={ { fontFamily: 'sfsymbols' } }
 					onPress={ () => onCommand( 'Italic' ) }
 				/>
 				<GroupButton
 					selected={ status.underline }
-					text="U"
-					textStyle={ { textDecorationLine: 'underline' } }
+					text="􀅕"
+					textStyle={ { fontFamily: 'sfsymbols' } }
 					onPress={ () => onCommand( 'Underline' ) }
 				/>
 				<GroupButton
 					last
 					selected={ status.strikethrough }
-					text="S"
-					textStyle={ { textDecorationLine: 'line-through' } }
+					text="􀅖"
+					textStyle={ { fontFamily: 'sfsymbols' } }
 					onPress={ () => onCommand( 'Strikethrough' ) }
 				/>
 			</Group>
@@ -127,17 +132,20 @@ export default function Toolbar( props: ToolbarProps ) {
 					<GroupButton
 						first
 						selected={ status.paraType === 'ul' }
-						text="UL"
+						text="􀋱"
+						textStyle={ { fontFamily: 'sfsymbols' } }
 						onPress={ () => onCommand( 'InsertUnorderedList' ) }
 					/>
 					<GroupButton
 						selected={ status.paraType === 'ol' }
-						text="OL"
+						text="􀋴"
+						textStyle={ { fontFamily: 'sfsymbols' } }
 						onPress={ () => onCommand( 'InsertOrderedList' ) }
 					/>
 					<GroupButton
 						last
-						text="UL"
+						text="􀋲"
+						textStyle={ { fontFamily: 'sfsymbols' } }
 					/>
 				</Group>
 				<Group
