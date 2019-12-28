@@ -138,6 +138,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 					<WebView
 						ref={ this.setWebViewRef }
 						hideKeyboardAccessoryView={ true }
+						keyboardDisplayRequiresUserAction={ false }
 						originWhitelist={['*']}
 						scrollEnabled={ false }
 						source={ { uri: editorUri } }
