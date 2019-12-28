@@ -34,7 +34,24 @@ interface EditorState {
 	textStatus: EditorStatus;
 }
 
-export default class Editor extends React.Component {
+interface EditorChildrenProps {
+	onShowFormat(): void;
+}
+
+interface EditorProps {
+	children( props: EditorChildrenProps ): JSX.Element;
+}
+
+export default class Editor extends React.Component<EditorProps, EditorState> {
+	static defaultProps = {
+		children: ( { onShowFormat } ) => (
+			<Button
+				title="Format"
+				onPress={ onShowFormat }
+			/>
+		),
+	}
+
 	state: EditorState = {
 		showingFormat: false,
 		textStatus: {
@@ -113,6 +130,9 @@ export default class Editor extends React.Component {
 	}
 
 	render() {
+		this.props;
+		const { children } = this.props;
+
 		return (
 			<>
 				<View style={ styles.container }>
@@ -141,10 +161,9 @@ export default class Editor extends React.Component {
 							onFormat={ this.onFormat }
 						/>
 					) : (
-						<Button
-							title="Format"
-							onPress={ this.onShowFormat }
-						/>
+						children( {
+							onShowFormat: this.onShowFormat,
+						} )
 					) }
 				</KeyboardAccessoryView>
 			</>
