@@ -1,11 +1,25 @@
 import React from 'react';
-import { Button } from 'react-native';
+import {
+	StyleSheet,
+	View,
+} from 'react-native';
 
-export default function Toolbar( { onShowFormat } ) {
+import { EditorChildrenProps } from '../Editor';
+import FormatButton from './FormatButton';
+
+const styles = StyleSheet.create( {
+	container: {
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+	},
+} );
+
+export default function Toolbar( props: EditorChildrenProps ) {
 	return (
-		<Button
-			title="Format"
-			onPress={ onShowFormat }
-		/>
+		<View style={ styles.container }>
+			<FormatButton
+				{ ...props }
+			/>
+		</View>
 	);
 }

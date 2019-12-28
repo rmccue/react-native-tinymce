@@ -36,7 +36,7 @@ interface EditorState {
 	textStatus: EditorStatus;
 }
 
-interface EditorChildrenProps {
+export interface EditorChildrenProps {
 	onShowFormat(): void;
 }
 
