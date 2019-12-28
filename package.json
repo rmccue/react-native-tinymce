@@ -2,6 +2,7 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
+    "build:editor": "webpack --mode development",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -23,7 +24,12 @@
     "@types/react": "~16.9.0",
     "@types/react-native": "~0.60.23",
     "babel-preset-expo": "~8.0.0",
-    "typescript": "~3.6.3"
+    "clean-webpack-plugin": "^3.0.0",
+    "html-webpack-inline-source-plugin": "^0.0.10",
+    "html-webpack-plugin": "^3.2.0",
+    "typescript": "~3.6.3",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   },
   "private": true
 }

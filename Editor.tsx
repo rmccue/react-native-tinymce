@@ -11,7 +11,7 @@ import { WebView } from 'react-native-webview';
 import Toolbar from './Toolbar';
 import { EditorStatus, UpdateStatusEvent } from './types';
 
-const editorHtml = require( './assets/editor.html' );
+const editorHtml = require( './assets/editor/editor.html' );
 const editorUri = Asset.fromModule( editorHtml ).uri;
 
 const styles = StyleSheet.create( {
