@@ -1,6 +1,7 @@
 import tinymce from 'tinymce';
 
 // Import appropriate dependencies.
+import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
 
 let status = {
@@ -41,6 +42,7 @@ tinymce.init( {
 
 	// Add some basic plugins.
 	plugins: [
+		'link',
 		'lists',
 	],
 } ).then( editors => {
