@@ -91,6 +91,12 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		this.keyboardHideListener = Keyboard.addListener( 'keyboardDidHide', this.onKeyboardHide );
 	}
 
+	componentDidUpdate( prevProps ) {
+		if ( prevProps.value !== this.props.value ) {
+			this.onUpdateContent( this.props.value );
+		}
+	}
+
 	componentWillUnmount() {
 		this.keyboardShowListener.remove();
 		this.keyboardHideListener.remove();
@@ -200,6 +206,16 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 			false,
 			format
 		);
+	}
+
+	onUpdateContent = ( content: string ) => {
+		if ( ! this.webref ) {
+			return;
+		}
+
+		this.webref.injectJavaScript( `
+			tinymce.activeEditor.setContent( ${ JSON.stringify( content ) } );
+		` );
 	}
 
 	getInitScript() {
