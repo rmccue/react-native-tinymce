@@ -194,13 +194,11 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 	}
 
 	onFormat = format => {
-		this.webref.injectJavaScript( `
-			// Execute the command first.
-			tinymce.activeEditor.execCommand( 'mceToggleFormat', false, ${ JSON.stringify( format ) } );
-
-			// Hide the keyboard again.
-			document.activeElement.blur();
-		` );
+		this.onCommand(
+			'mceToggleFormat',
+			false,
+			format
+		);
 	}
 
 	render() {
