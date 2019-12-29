@@ -20,6 +20,10 @@ const styles = StyleSheet.create( {
 } );
 
 export default class App extends React.Component {
+	state = {
+		content: '<p>Hello world!</p>',
+	}
+
 	componentDidMount() {
 		Font.loadAsync( {
 			'sfsymbols': require( './assets/SFSymbolsFallback.ttf' ),
@@ -32,7 +36,9 @@ export default class App extends React.Component {
 				<View
 					style={ styles.container }
 				>
-					<Editor />
+					<Editor
+						value={ this.state.content }
+					/>
 				</View>
 			</SafeAreaView>
 		);

@@ -56,6 +56,7 @@ export interface EditorChildrenProps {
 
 interface EditorProps {
 	children( props: EditorChildrenProps ): JSX.Element;
+	value?: string;
 	toolbarStyle: StyleProp<ViewStyle>;
 }
 
@@ -201,6 +202,24 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		);
 	}
 
+	getInitScript() {
+		return `
+			// Initialize the editor.
+			const init = {
+				content: ${ JSON.stringify( this.props.value ) },
+			};
+			const editor = tinymce.activeEditor;
+
+			// If we have content, initialize the editor.
+			if ( init.content ) {
+				editor.setContent( init.content );
+			}
+
+			// Ensure string evaluates to true.
+			true;
+		`;
+	}
+
 	render() {
 		const { children } = this.props;
 
@@ -210,6 +229,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 					<WebView
 						ref={ this.setWebViewRef }
 						hideKeyboardAccessoryView={ true }
+						injectedJavaScript={ this.getInitScript() }
 						keyboardDisplayRequiresUserAction={ false }
 						originWhitelist={['*']}
 						scrollEnabled={ false }
