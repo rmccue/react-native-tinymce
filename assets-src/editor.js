@@ -50,7 +50,7 @@ tinymce.init( {
 	// Add our custom class to the editor container.
 	editor.editorContainer.className = 'editor-wrap';
 
-	editor.on( 'NodeChange', ( api ) => {
+	editor.on( 'NodeChange', api => {
 		// Find the nearest list item.
 		for ( let i = 0; i < api.parents.length; i++ ) {
 			if ( api.parents[ i ].tagName !== 'LI' ) {
