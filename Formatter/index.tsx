@@ -1,10 +1,10 @@
 import React from 'react';
 import {
+	Animated,
 	LayoutAnimation,
 	ScrollView,
 	StyleProp,
 	StyleSheet,
-	Text,
 	TouchableOpacity,
 	View,
 	ViewStyle,
@@ -86,14 +86,20 @@ interface ToolbarProps {
 }
 
 export default class Toolbar extends React.Component<ToolbarProps> {
-	componentDidUpdate() {
-		LayoutAnimation.configureNext(
-			LayoutAnimation.create(
-				250,
-				LayoutAnimation.Types.keyboard,
-				LayoutAnimation.Properties.scaleXY,
-			)
-		);
+	state = {
+		bottomOffset: new Animated.Value( styles.hidden.bottom ),
+	}
+
+	componentDidUpdate( prevProps: ToolbarProps ) {
+		if ( prevProps.visible !== this.props.visible ) {
+			Animated.timing(
+				this.state.bottomOffset,
+				{
+					toValue: this.props.visible ? styles.visible.bottom : styles.hidden.bottom,
+					duration: 250,
+				}
+			).start();
+		}
 	}
 
 	render() {
@@ -101,12 +107,16 @@ export default class Toolbar extends React.Component<ToolbarProps> {
 
 		const combinedStyle = [
 			styles.container,
-			this.props.visible ? styles.visible : styles.hidden,
+			{
+				bottom: this.state.bottomOffset,
+			},
 			style,
 		];
 
 		return (
-			<View style={ combinedStyle }>
+			<Animated.View
+				style={ combinedStyle }
+			>
 				<View style={ styles.topRow }>
 					<ScrollView
 						horizontal
@@ -229,7 +239,7 @@ export default class Toolbar extends React.Component<ToolbarProps> {
 						/>
 					</Group>
 				</View>
-			</View>
+			</Animated.View>
 		);
 	}
 }
