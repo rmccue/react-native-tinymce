@@ -1,6 +1,7 @@
 import * as Font from 'expo-font';
 import React from 'react';
 import {
+	Button,
 	SafeAreaView,
 	StyleSheet,
 	View
@@ -24,10 +25,17 @@ export default class App extends React.Component {
 		content: '<p>Hello world!</p>',
 	}
 
+	editor: Editor = null;
+
 	componentDidMount() {
 		Font.loadAsync( {
 			'sfsymbols': require( './assets/SFSymbolsFallback.ttf' ),
 		} );
+	}
+
+	getContent = async () => {
+		const content = await this.editor.getContent();
+		console.log( content );
 	}
 
 	render() {
@@ -36,7 +44,12 @@ export default class App extends React.Component {
 				<View
 					style={ styles.container }
 				>
+					<Button
+						title="Get Content"
+						onPress={ this.getContent }
+					/>
 					<Editor
+						ref={ ref => this.editor = ref }
 						value={ this.state.content }
 					/>
 				</View>
