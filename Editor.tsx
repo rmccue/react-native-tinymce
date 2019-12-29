@@ -55,13 +55,24 @@ export interface EditorChildrenProps {
 }
 
 interface EditorProps {
+	/**
+	 * Render prop for the toolbar.
+	 */
 	children( props: EditorChildrenProps ): JSX.Element;
+
+	/**
+	 * Initial HTML content for the editor.
+	 */
 	value?: string;
+
+	/**
+	 * Styles to apply to the formatter.
+	 */
 	toolbarStyle: StyleProp<ViewStyle>;
 }
 
 export default class Editor extends React.Component<EditorProps, EditorState> {
-	static defaultProps = {
+	static defaultProps: EditorProps = {
 		children: props => <Toolbar { ...props } />,
 		toolbarStyle: null,
 	}
