@@ -1,6 +1,12 @@
 {
   "name": "react-native-tinymce",
   "main": "index.tsx",
+  "files": [
+    "assets/editor/",
+    "Formatter/",
+    "Toolbar/",
+    "*.tsx"
+  ],
   "scripts": {
     "start": "expo start",
     "build:editor": "webpack --mode production",
