@@ -61,9 +61,9 @@ tinymce.init( {
 			// Found a list item, check the parent.
 			const parentIndex = i + 1;
 			if ( parentIndex >= api.parents.length ) {
-				console.log( parentIndex );
 				continue;
 			}
+
 			const parent = api.parents[ parentIndex ];
 			switch ( parent.tagName ) {
 				case 'UL':
@@ -73,6 +73,9 @@ tinymce.init( {
 						paraType: parent.tagName.toLowerCase(),
 					};
 					sendStatus();
+					break;
+
+				default:
 					break;
 			}
 		}
