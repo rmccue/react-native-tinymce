@@ -5,7 +5,8 @@
     "assets/editor/",
     "Formatter/",
     "Toolbar/",
-    "*.tsx"
+    "*.tsx",
+    "*.ts"
   ],
   "scripts": {
     "start": "expo start",
