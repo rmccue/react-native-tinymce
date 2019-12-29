@@ -1,6 +1,8 @@
 import { Asset } from 'expo-asset';
 import React from 'react';
 import {
+	EmitterSubscription,
+	Keyboard,
 	StyleProp,
 	StyleSheet,
 	View,
@@ -12,6 +14,17 @@ import { WebView } from 'react-native-webview';
 import Formatter from './Formatter';
 import Toolbar from './Toolbar';
 import { EditorStatus, UpdateStatusEvent } from './types';
+
+/**
+ * Time to debounce a keyboard show event.
+ *
+ * Experimentally tested on an iPhone 11 Pro, most events take 10-25ms to
+ * execute, while some outliers occur around 50ms, with occasional events a
+ * bit higher when lag occurs.
+ *
+ * 100ms should be plenty to cover all events including outliers.
+ */
+const KEYBOARD_DEBOUNCE = 100;
 
 const editorHtml = require( './assets/editor/editor.html' );
 const editorUri = Asset.fromModule( editorHtml ).uri;
@@ -67,10 +80,66 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		},
 	}
 
+	keyboardShowListener: EmitterSubscription = null;
+	keyboardHideListener: EmitterSubscription = null;
+	keyboardTimer: number = null;s
 	webref = null;
+
+	componentDidMount() {
+		this.keyboardShowListener = Keyboard.addListener( 'keyboardWillShow', this.onKeyboardShow );
+		this.keyboardHideListener = Keyboard.addListener( 'keyboardDidHide', this.onKeyboardHide );
+	}
+
+	componentWillUnmount() {
+		this.keyboardShowListener.remove();
+		this.keyboardHideListener.remove();
+	}
 
 	setWebViewRef = ref => {
 		this.webref = ref;
+	}
+
+	/**
+	 * Hide the formatting pane, but debounce the event.
+	 *
+	 * When formatting is applied, TinyMCE internally triggers focus on the
+	 * contenteditable element, which triggers the keyboard. We then
+	 * hide it as soon as possible via the .blur() call in onCommand.
+	 *
+	 * By debouncing the event, we leave enough time for TinyMCE to do its
+	 * magic. For "real" keyboard events (i.e. user moves cursor or selects
+	 * another field), the keyboard takes ~250ms to show anyway, so a slight
+	 * delay doesn't have a huge visual impact.
+	 *
+	 * @see KEYBOARD_DEBOUNCE
+	 */
+	onKeyboardShow = e => {
+		this.keyboardTimer = window.setTimeout( () => {
+			this.keyboardTimer = null;
+			this.onDebouncedKeyboardShow( e );
+		}, KEYBOARD_DEBOUNCE );
+	}
+
+	/**
+	 * Cancel any keyboard timers if set.
+	 */
+	onKeyboardHide = e => {
+		if ( this.keyboardTimer ) {
+			window.clearTimeout( this.keyboardTimer );
+		}
+	}
+
+	/**
+	 * Hide the formatting pane if the keyboard is shown.
+	 *
+	 * @see onKeyboardShow
+	 */
+	onDebouncedKeyboardShow = e => {
+		if ( this.state.showingFormat ) {
+			this.setState( {
+				showingFormat: false,
+			} );
+		}
 	}
 
 	onMessage = event => {
