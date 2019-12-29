@@ -20,22 +20,13 @@ const styles = StyleSheet.create( {
 } );
 
 export default class App extends React.Component {
-	state = {
-		loadedSymbols: false,
-	}
-
 	componentDidMount() {
 		Font.loadAsync( {
 			'sfsymbols': require( './assets/SFSymbolsFallback.ttf' ),
-		} ).then( () => {
-			this.setState( { loadedSymbols: true } );
 		} );
 	}
-	render() {
-		if ( ! this.state.loadedSymbols ) {
-			return null;
-		}
 
+	render() {
 		return (
 			<SafeAreaView style={ styles.safeArea }>
 				<View
