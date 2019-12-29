@@ -81,11 +81,11 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		},
 	}
 
-	keyboardShowListener: EmitterSubscription = null;
-	keyboardHideListener: EmitterSubscription = null;
-	keyboardTimer: number = null;
-	resolveContent: ( content: string ) => void = null;
-	webref = null;
+	private keyboardShowListener: EmitterSubscription = null;
+	private keyboardHideListener: EmitterSubscription = null;
+	private keyboardTimer: number = null;
+	private resolveContent: ( content: string ) => void = null;
+	private webref = null;
 
 	componentDidMount() {
 		this.keyboardShowListener = Keyboard.addListener( 'keyboardWillShow', this.onKeyboardShow );
@@ -103,7 +103,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		this.keyboardHideListener.remove();
 	}
 
-	async getContent() {
+	public async getContent() {
 		return new Promise( ( resolve, reject ) => {
 			this.resolveContent = resolve;
 
@@ -118,7 +118,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		} );
 	}
 
-	setWebViewRef = ref => {
+	protected setWebViewRef = ref => {
 		this.webref = ref;
 	}
 
@@ -136,7 +136,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 	 *
 	 * @see KEYBOARD_DEBOUNCE
 	 */
-	onKeyboardShow = e => {
+	protected onKeyboardShow = e => {
 		this.keyboardTimer = window.setTimeout( () => {
 			this.keyboardTimer = null;
 			this.onDebouncedKeyboardShow( e );
@@ -146,7 +146,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 	/**
 	 * Cancel any keyboard timers if set.
 	 */
-	onKeyboardHide = e => {
+	protected onKeyboardHide = e => {
 		if ( this.keyboardTimer ) {
 			window.clearTimeout( this.keyboardTimer );
 		}
@@ -157,7 +157,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 	 *
 	 * @see onKeyboardShow
 	 */
-	onDebouncedKeyboardShow = e => {
+	protected onDebouncedKeyboardShow = e => {
 		if ( this.state.showingFormat ) {
 			this.setState( {
 				showingFormat: false,
@@ -165,7 +165,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		}
 	}
 
-	onMessage = ( event: WebViewMessageEvent ) => {
+	protected onMessage = ( event: WebViewMessageEvent ) => {
 		const data: EditorEvent = JSON.parse( event.nativeEvent.data );
 		switch ( data.type ) {
 			case 'updateStatus':
@@ -187,7 +187,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		}
 	}
 
-	onShowFormat = () => {
+	protected onShowFormat = () => {
 		if ( ! this.webref ) {
 			return;
 		}
@@ -201,7 +201,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		} );
 	}
 
-	onDismissToolbar = () => {
+	protected onDismissToolbar = () => {
 		this.setState( {
 			showingFormat: false,
 		} );
@@ -212,7 +212,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		` );
 	}
 
-	onCommand = ( commandId: string, showUI?: boolean, value?: string ) => {
+	protected onCommand = ( commandId: string, showUI?: boolean, value?: string ) => {
 		const args = [ commandId, showUI, value ];
 		this.webref.injectJavaScript( `
 			// Execute the command first.
@@ -225,7 +225,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		` );
 	}
 
-	onFormat = format => {
+	protected onFormat = format => {
 		this.onCommand(
 			'mceToggleFormat',
 			false,
@@ -233,7 +233,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		);
 	}
 
-	onUpdateContent = ( content: string ) => {
+	protected onUpdateContent = ( content: string ) => {
 		if ( ! this.webref ) {
 			return;
 		}
@@ -243,7 +243,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		` );
 	}
 
-	getInitScript() {
+	protected getInitScript() {
 		return `
 			// Initialize the editor.
 			const init = {
