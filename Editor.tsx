@@ -56,6 +56,11 @@ export interface EditorChildrenProps {
 
 interface EditorProps {
 	/**
+	 * Styles to apply to the formatter.
+	 */
+	formatterStyle: StyleProp<ViewStyle>;
+
+	/**
 	 * Render prop for the toolbar.
 	 */
 	children( props: EditorChildrenProps ): JSX.Element;
@@ -64,17 +69,12 @@ interface EditorProps {
 	 * Initial HTML content for the editor.
 	 */
 	value?: string;
-
-	/**
-	 * Styles to apply to the formatter.
-	 */
-	toolbarStyle: StyleProp<ViewStyle>;
 }
 
 export default class Editor extends React.Component<EditorProps, EditorState> {
 	static defaultProps: EditorProps = {
 		children: props => <Toolbar { ...props } />,
-		toolbarStyle: null,
+		formatterStyle: null,
 	}
 
 	state: EditorState = {
@@ -292,7 +292,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 				</View>
 				<Formatter
 					status={ this.state.textStatus }
-					style={ this.props.toolbarStyle }
+					style={ this.props.formatterStyle }
 					visible={ this.state.showingFormat }
 					onCommand={ this.onCommand }
 					onDismiss={ this.onDismissToolbar }
