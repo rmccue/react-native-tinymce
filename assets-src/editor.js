@@ -2,8 +2,6 @@ import tinymce from 'tinymce';
 
 // Import appropriate dependencies.
 import 'tinymce/plugins/lists';
-import 'tinymce/themes/silver';
-// import 'tinymce/skins/content/default';
 
 let status = {
 	bold: false,
@@ -22,8 +20,6 @@ const sendStatus = () => {
 			type: 'updateStatus',
 			payload: status,
 		} ) );
-	} else {
-		console.log( status );
 	}
 };
 
