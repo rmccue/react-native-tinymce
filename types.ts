@@ -10,12 +10,21 @@ export interface EditorStatus {
 	},
 }
 
-export interface EditorEvent {
+export interface BaseEditorEvent {
 	type: string;
 	payload: object;
 }
 
-export interface UpdateStatusEvent extends EditorEvent {
+export interface UpdateStatusEvent extends BaseEditorEvent {
 	type: 'updateStatus';
 	payload: EditorStatus;
 }
+
+export interface GetContentEvent extends BaseEditorEvent {
+	type: 'getContent';
+	payload: {
+		html: string;
+	}
+}
+
+export type EditorEvent = UpdateStatusEvent | GetContentEvent;

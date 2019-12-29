@@ -9,11 +9,11 @@ import {
 	ViewStyle,
 } from 'react-native';
 import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
-import { WebView } from 'react-native-webview';
+import { WebView, WebViewMessageEvent } from 'react-native-webview';
 
 import Formatter from './Formatter';
 import Toolbar from './Toolbar';
-import { EditorStatus, UpdateStatusEvent } from './types';
+import { EditorEvent, EditorStatus } from './types';
 
 /**
  * Time to debounce a keyboard show event.
@@ -83,7 +83,8 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 
 	keyboardShowListener: EmitterSubscription = null;
 	keyboardHideListener: EmitterSubscription = null;
-	keyboardTimer: number = null;s
+	keyboardTimer: number = null;
+	resolveContent: ( content: string ) => void = null;
 	webref = null;
 
 	componentDidMount() {
@@ -100,6 +101,21 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 	componentWillUnmount() {
 		this.keyboardShowListener.remove();
 		this.keyboardHideListener.remove();
+	}
+
+	async getContent() {
+		return new Promise( ( resolve, reject ) => {
+			this.resolveContent = resolve;
+
+			this.webref.injectJavaScript( `
+				window.ReactNativeWebView.postMessage( JSON.stringify( {
+					type: 'getContent',
+					payload: {
+						html: tinymce.activeEditor.getContent(),
+					},
+				} ) );
+			` );
+		} );
 	}
 
 	setWebViewRef = ref => {
@@ -149,13 +165,22 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		}
 	}
 
-	onMessage = event => {
-		const data: UpdateStatusEvent = JSON.parse( event.nativeEvent.data );
+	onMessage = ( event: WebViewMessageEvent ) => {
+		const data: EditorEvent = JSON.parse( event.nativeEvent.data );
 		switch ( data.type ) {
 			case 'updateStatus':
 				this.setState( {
 					textStatus: data.payload,
 				} );
+				break;
+
+			case 'getContent':
+				if ( ! this.resolveContent ) {
+					return;
+				}
+
+				this.resolveContent( data.payload.html );
+				break;
 
 			default:
 				return;
