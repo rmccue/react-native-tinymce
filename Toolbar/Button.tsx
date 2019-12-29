@@ -1,9 +1,10 @@
 import React from 'react';
 import {
 	StyleSheet,
-	Text,
 	TouchableOpacity,
 } from 'react-native';
+
+import Icon from '../Icon';
 
 export interface ButtonProps {
 	icon: string;
@@ -18,7 +19,6 @@ const styles = StyleSheet.create( {
 	buttonText: {
 		padding: 8,
 		fontSize: 20,
-		fontFamily: 'sfsymbols',
 		color: '#007aff',
 		textAlign: 'center',
 	},
@@ -32,11 +32,11 @@ export default function FormatButton( props: ButtonProps ) {
 			style={ styles.button }
 			onPress={ props.onPress }
 		>
-			<Text
+			<Icon
+				fallback={ props.label }
+				icon={ props.icon }
 				style={ styles.buttonText }
-			>
-				{ props.icon }
-			</Text>
+			/>
 		</TouchableOpacity>
 	);
 }

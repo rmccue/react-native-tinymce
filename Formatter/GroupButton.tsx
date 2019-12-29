@@ -1,9 +1,10 @@
 import React from 'react';
 import {
 	StyleSheet,
-	Text,
 	TouchableOpacity,
 } from 'react-native';
+
+import Icon from '../Icon';
 
 const styles = StyleSheet.create( {
 	base: {
@@ -46,17 +47,20 @@ export default function ButtonGroupButton( props ) {
 	const textStyle = [
 		styles.text,
 		props.selected && styles.selectedText,
-		props.textStyle,
 	];
 
 	return (
 		<TouchableOpacity
+			accessibilityLabel={ props.label }
 			style={ style }
 			onPress={ props.onPress }
 		>
-			<Text style={ textStyle }>
-				{ props.text }
-			</Text>
+			<Icon
+				fallback={ props.text }
+				fallbackStyle={ props.textStyle }
+				icon={ props.icon }
+				style={ textStyle }
+			/>
 		</TouchableOpacity>
 	);
 };

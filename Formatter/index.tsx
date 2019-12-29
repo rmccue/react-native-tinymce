@@ -13,6 +13,8 @@ import {
 import Group from './Group';
 import GroupButton from './GroupButton';
 import ParagraphFormatButton from './ParagraphFormatButton';
+import Icon from '../Icon';
+import icons from '../icons';
 import { EditorStatus } from '../types';
 
 const HEIGHT_BUMPER = 15;
@@ -140,41 +142,46 @@ export default class Toolbar extends React.Component<ToolbarProps> {
 						style={ styles.closer }
 						onPress={ onDismiss }
 					>
-						<Text
-							style={ {
-								fontFamily: 'sfsymbols',
-								fontSize: 18,
-							} }
-						>
-							􀆄
-						</Text>
+						<Icon
+							fallback="X"
+							icon={ icons.xmark }
+							style={ { fontSize: 18 } }
+						/>
 					</TouchableOpacity>
 				</View>
 				<Group>
 					<GroupButton
 						first
+						icon={ icons.bold }
 						selected={ status.bold }
-						text="􀅓"
-						textStyle={ { fontFamily: 'sfsymbols' } }
+						label="Bold"
+						text="B"
+						textStyle={ { fontWeight: 'bold' } }
 						onPress={ () => onCommand( 'Bold' ) }
 					/>
 					<GroupButton
+						icon={ icons.italic }
 						selected={ status.italic }
-						text="􀅔"
-						textStyle={ { fontFamily: 'sfsymbols' } }
+						label="Italic"
+						text="I"
+						textStyle={ { fontStyle: 'italic' } }
 						onPress={ () => onCommand( 'Italic' ) }
 					/>
 					<GroupButton
 						selected={ status.underline }
-						text="􀅕"
-						textStyle={ { fontFamily: 'sfsymbols' } }
+						icon={ icons.underline }
+						label="Underline"
+						text="U"
+						textStyle={ { textDecorationLine: 'underline' } }
 						onPress={ () => onCommand( 'Underline' ) }
 					/>
 					<GroupButton
 						last
 						selected={ status.strikethrough }
-						text="􀅖"
-						textStyle={ { fontFamily: 'sfsymbols' } }
+						icon={ icons.strikethrough }
+						label="Strikethrough"
+						text="S"
+						textStyle={ { textDecorationLine: 'line-through' } }
 						onPress={ () => onCommand( 'Strikethrough' ) }
 					/>
 				</Group>
@@ -184,21 +191,23 @@ export default class Toolbar extends React.Component<ToolbarProps> {
 					>
 						<GroupButton
 							first
+							label="UL"
 							selected={ status.paraType === 'ul' }
-							text="􀋱"
-							textStyle={ { fontFamily: 'sfsymbols' } }
+							icon={ icons['list.bullet'] }
+							text="•"
 							onPress={ () => onCommand( 'InsertUnorderedList' ) }
 						/>
 						<GroupButton
 							selected={ status.paraType === 'ol' }
-							text="􀋴"
-							textStyle={ { fontFamily: 'sfsymbols' } }
+							label="UL"
+							icon={ icons['list.number'] }
+							text="1."
 							onPress={ () => onCommand( 'InsertOrderedList' ) }
 						/>
 						<GroupButton
+							icon={ icons['list.dash'] }
 							last
-							text="􀋲"
-							textStyle={ { fontFamily: 'sfsymbols' } }
+							text="UL"
 						/>
 					</Group>
 					<Group
@@ -206,14 +215,16 @@ export default class Toolbar extends React.Component<ToolbarProps> {
 					>
 						<GroupButton
 							first
-							text="􀋶"
-							textStyle={ { fontFamily: 'sfsymbols' } }
+							label="Outdent"
+							icon={ icons['decrease.indent'] }
+							text="⇤"
 							onPress={ () => onCommand( 'outdent' ) }
 						/>
 						<GroupButton
 							last
-							text="􀋵"
-							textStyle={ { fontFamily: 'sfsymbols' } }
+							icon={ icons['increase.indent'] }
+							label="Indent"
+							text="⇥"
 							onPress={ () => onCommand( 'indent' ) }
 						/>
 					</Group>
