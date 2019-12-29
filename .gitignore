@@ -1,5 +1,7 @@
 node_modules/**/*
+.cache/*
 .expo/*
+assets/SFSymbolsFallback.ttf
 assets/editor/*
 npm-debug.*
 *.jks
