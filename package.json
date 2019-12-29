@@ -1,5 +1,6 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
+  "name": "react-native-tinymce",
+  "main": "index.tsx",
   "scripts": {
     "start": "expo start",
     "build:editor": "webpack --mode production",
@@ -9,15 +10,13 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "expo": "~36.0.0",
-    "react": "~16.9.0",
-    "react-dom": "~16.9.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-keyboard-accessory": "^0.1.10",
-    "react-native-screens": "2.0.0-alpha.12",
-    "react-native-web": "~0.11.7",
-    "react-native-webview": "7.4.3",
     "tinymce": "^5.1.5"
+  },
+  "peerDependencies": {
+    "react": "~16.9.0",
+    "react-native": "*",
+    "react-native-webview": "7.4.3"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -25,8 +24,12 @@
     "@types/react-native": "~0.60.23",
     "babel-preset-expo": "~8.0.0",
     "clean-webpack-plugin": "^3.0.0",
+    "expo": "~36.0.0",
     "html-webpack-inline-source-plugin": "^0.0.10",
     "html-webpack-plugin": "^3.2.0",
+    "react": "~16.9.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
+    "react-native-webview": "7.4.3",
     "typescript": "~3.6.3",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
