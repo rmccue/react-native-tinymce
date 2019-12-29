@@ -180,7 +180,8 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		` );
 	}
 
-	onCommand = ( ...args ) => {
+	onCommand = ( commandId: string, showUI?: boolean, value?: string ) => {
+		const args = [ commandId, showUI, value ];
 		this.webref.injectJavaScript( `
 			// Execute the command first.
 			tinymce.activeEditor.execCommand(
