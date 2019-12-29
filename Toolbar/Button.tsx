@@ -7,6 +7,7 @@ import {
 import Icon from '../Icon';
 
 export interface ButtonProps {
+	fallback?: string;
 	icon: string;
 	label: string;
 	onPress(): void;
@@ -33,7 +34,7 @@ export default function FormatButton( props: ButtonProps ) {
 			onPress={ props.onPress }
 		>
 			<Icon
-				fallback={ props.label }
+				fallback={ props.fallback || props.label }
 				icon={ props.icon }
 				style={ styles.buttonText }
 			/>
