@@ -257,15 +257,10 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 	protected getInitScript() {
 		return `
 			// Initialize the editor.
-			const init = {
+			const initConfig = {
 				content: ${ JSON.stringify( this.props.value ) },
 			};
-			const editor = tinymce.activeEditor;
-
-			// If we have content, initialize the editor.
-			if ( init.content ) {
-				editor.setContent( init.content );
-			}
+			window.init( initConfig );
 
 			// Ensure string evaluates to true.
 			true;
