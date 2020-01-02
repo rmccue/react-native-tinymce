@@ -34,8 +34,7 @@ const styles = StyleSheet.create( {
 		flex: 1,
 	},
 	webView: {
-		flex: 0,
-		height: 300,
+		flex: 1,
 		backgroundColor: '#fff',
 	},
 	toolbar: {
