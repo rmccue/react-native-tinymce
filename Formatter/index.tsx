@@ -21,6 +21,8 @@ const HEIGHT_BUMPER = 15;
 const HEIGHT_SAFE_AREA = 20;
 const HEIGHT_TOOLBAR = 220;
 const PADDING_Y = 20;
+const SHADOW_RADIUS = 10;
+const SHADOW_OFFSET = 10;
 
 const styles = StyleSheet.create( {
 	container: {
@@ -34,17 +36,17 @@ const styles = StyleSheet.create( {
 		shadowColor: '#8e8e93',
 		shadowOffset: {
 			width: 0,
-			height: -10,
+			height: 0 - SHADOW_OFFSET,
 		},
 		shadowOpacity: 0.2,
-		shadowRadius: 10,
+		shadowRadius: SHADOW_RADIUS,
 
 		position: 'absolute',
 		left: 0,
 		right: 0,
 	},
 	hidden: {
-		bottom: 0 - PADDING_Y - HEIGHT_TOOLBAR - HEIGHT_BUMPER - HEIGHT_SAFE_AREA,
+		bottom: 0 - PADDING_Y - HEIGHT_TOOLBAR - HEIGHT_BUMPER - HEIGHT_SAFE_AREA - SHADOW_RADIUS - SHADOW_OFFSET,
 	},
 	visible: {
 		bottom: 0 - HEIGHT_BUMPER - HEIGHT_SAFE_AREA,
