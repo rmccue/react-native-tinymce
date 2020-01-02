@@ -316,11 +316,10 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 					inSafeAreaView
 					style={ styles.toolbar }
 				>
-					{ ( ! this.state.showingFormat && ! this.state.showingLink ) ? (
+					{ ! this.state.showingFormat ? (
 						children( {
 							onCommand: this.onCommand,
 							onShowFormat: this.onShowFormat,
-							onShowLink: this.onShowLink,
 						} )
 					) : null }
 				</KeyboardAccessoryView>
