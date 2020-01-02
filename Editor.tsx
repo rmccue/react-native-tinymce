@@ -64,7 +64,7 @@ interface EditorProps {
 	/**
 	 * Styles to apply to the formatter.
 	 */
-	formatterStyle: StyleProp<ViewStyle>;
+	formatterStyle?: StyleProp<ViewStyle>;
 
 	/**
 	 * Render prop for the toolbar.
@@ -74,7 +74,7 @@ interface EditorProps {
 	/**
 	 * Styles to apply to the web view.
 	 */
-	webViewStyle: StyleProp<ViewStyle>;
+	webViewStyle?: StyleProp<ViewStyle>;
 
 	/**
 	 * Initial HTML content for the editor.
