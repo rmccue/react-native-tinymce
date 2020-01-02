@@ -56,6 +56,13 @@ export interface EditorChildrenProps {
 
 interface EditorProps {
 	/**
+	 * CSS to apply to the HTML content inside the editor.
+	 *
+	 * https://www.tiny.cloud/docs/configure/content-appearance/#content_style
+	 */
+	contentCss?: string;
+
+	/**
 	 * Styles to apply to the formatter.
 	 */
 	formatterStyle: StyleProp<ViewStyle>;
@@ -73,6 +80,7 @@ interface EditorProps {
 
 export default class Editor extends React.Component<EditorProps, EditorState> {
 	static defaultProps: EditorProps = {
+		contentCss: 'body { font-family: sans-serif; }',
 		children: props => <Toolbar { ...props } />,
 		formatterStyle: null,
 	}
@@ -255,11 +263,14 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 	}
 
 	protected getInitScript() {
+		const config = {
+			content: this.props.value,
+			content_style: this.props.contentCss,
+		};
+
 		return `
 			// Initialize the editor.
-			const initConfig = {
-				content: ${ JSON.stringify( this.props.value ) },
-			};
+			const initConfig = ${ JSON.stringify( config ) };
 			window.init( initConfig );
 
 			// Ensure string evaluates to true.

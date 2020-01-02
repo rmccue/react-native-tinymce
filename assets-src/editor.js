@@ -36,6 +36,7 @@ window.init = config => {
 
 		// Reset content styles.
 		content_css: false,
+		content_style: config.content_style || '',
 
 		// No need for inputs.
 		hidden_input: false,
