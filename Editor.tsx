@@ -72,6 +72,11 @@ interface EditorProps {
 	children( props: EditorChildrenProps ): JSX.Element;
 
 	/**
+	 * Placeholder text to show in the field.
+	 */
+	placeholder?: string;
+
+	/**
 	 * Styles to apply to the web view.
 	 */
 	webViewStyle?: StyleProp<ViewStyle>;
@@ -271,6 +276,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		const config = {
 			content: this.props.value,
 			content_style: this.props.contentCss,
+			placeholder: this.props.placeholder || null,
 		};
 
 		return `

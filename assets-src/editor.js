@@ -24,8 +24,14 @@ const sendStatus = () => {
 };
 
 window.init = config => {
+	const textarea = document.getElementById( 'editor' );
+
+	if ( config.placeholder ) {
+		textarea.placeholder = config.placeholder;
+	}
+
 	tinymce.init( {
-		target: document.getElementById( 'editor' ),
+		target: textarea,
 
 		// Remove all UI.
 		menubar: false,
