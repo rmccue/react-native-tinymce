@@ -73,6 +73,11 @@ interface EditorProps {
 	children( props: EditorChildrenProps ): JSX.Element;
 
 	/**
+	 * Styles to apply to the web view.
+	 */
+	webViewStyle: StyleProp<ViewStyle>;
+
+	/**
 	 * Initial HTML content for the editor.
 	 */
 	value?: string;
@@ -83,6 +88,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		contentCss: 'body { font-family: sans-serif; }',
 		children: props => <Toolbar { ...props } />,
 		formatterStyle: null,
+		webViewStyle: null,
 	}
 
 	state: EditorState = {
@@ -292,7 +298,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 						originWhitelist={['*']}
 						scrollEnabled={ false }
 						source={ { uri: editorUri } }
-						style={ styles.webView }
+						style={ [ styles.webView, this.props.webViewStyle ] }
 						onMessage={ this.onMessage }
 					/>
 				</View>
