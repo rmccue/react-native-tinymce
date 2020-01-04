@@ -23,12 +23,20 @@ const sendStatus = () => {
 	}
 };
 
+const CORE_CSS = `
+	.mce-content-body.empty {
+		position: relative;
+	}
+	.mce-content-body.empty::before {
+		opacity: 0.35;
+		display: block;
+		position: absolute;
+		content: attr( data-placeholder );
+	}
+`;
+
 window.init = config => {
 	const textarea = document.getElementById( 'editor' );
-
-	if ( config.placeholder ) {
-		textarea.placeholder = config.placeholder;
-	}
 
 	tinymce.init( {
 		target: textarea,
@@ -42,7 +50,7 @@ window.init = config => {
 
 		// Reset content styles.
 		content_css: false,
-		content_style: config.content_style || '',
+		content_style: CORE_CSS + ( config.content_style || '' ),
 
 		// No need for inputs.
 		hidden_input: false,
@@ -139,9 +147,18 @@ window.init = config => {
 			sendStatus();
 		} );
 
+		if ( config.placeholder ) {
+			editor.getBody().dataset.placeholder = config.placeholder;
+		}
+
 		// If we have content, initialize the editor.
-		if ( config.content ) {
+		if ( config.content && config.content.length > 0 ) {
 			editor.setContent( config.content );
+		} else {
+			editor.getBody().classList.add( 'empty' );
+			editor.once( 'focus', () => {
+				editor.getBody().classList.remove( 'empty' );
+			} );
 		}
 	} );
 };
