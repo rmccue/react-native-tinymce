@@ -22,7 +22,8 @@ const styles = StyleSheet.create( {
 
 export default class App extends React.Component {
 	state = {
-		content: '<p>Hello world!</p>',
+		// content: '<p>Hello world!</p>',
+		content: '',
 	}
 
 	editor: Editor = null;
@@ -50,6 +51,7 @@ export default class App extends React.Component {
 					/>
 					<Editor
 						ref={ ref => this.editor = ref }
+						placeholder="Start writing…"
 						value={ this.state.content }
 					/>
 				</View>

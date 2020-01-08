@@ -35,8 +35,7 @@ const styles = StyleSheet.create( {
 		flex: 1,
 	},
 	webView: {
-		flex: 0,
-		height: 300,
+		flex: 1,
 		backgroundColor: '#fff',
 	},
 	toolbar: {
@@ -58,14 +57,31 @@ export interface EditorChildrenProps {
 
 interface EditorProps {
 	/**
+	 * CSS to apply to the HTML content inside the editor.
+	 *
+	 * https://www.tiny.cloud/docs/configure/content-appearance/#content_style
+	 */
+	contentCss?: string;
+
+	/**
 	 * Styles to apply to the formatter.
 	 */
-	formatterStyle: StyleProp<ViewStyle>;
+	formatterStyle?: StyleProp<ViewStyle>;
 
 	/**
 	 * Render prop for the toolbar.
 	 */
 	children( props: EditorChildrenProps ): JSX.Element;
+
+	/**
+	 * Placeholder text to show in the field.
+	 */
+	placeholder?: string;
+
+	/**
+	 * Styles to apply to the web view.
+	 */
+	webViewStyle?: StyleProp<ViewStyle>;
 
 	/**
 	 * Initial HTML content for the editor.
@@ -75,8 +91,10 @@ interface EditorProps {
 
 export default class Editor extends React.Component<EditorProps, EditorState> {
 	static defaultProps: EditorProps = {
+		contentCss: 'body { font-family: sans-serif; }',
 		children: props => <Toolbar { ...props } />,
 		formatterStyle: null,
+		webViewStyle: null,
 	}
 
 	state: EditorState = {
@@ -273,17 +291,16 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 	}
 
 	protected getInitScript() {
+		const config = {
+			content: this.props.value,
+			content_style: this.props.contentCss,
+			placeholder: this.props.placeholder || null,
+		};
+
 		return `
 			// Initialize the editor.
-			const init = {
-				content: ${ JSON.stringify( this.props.value ) },
-			};
-			const editor = tinymce.activeEditor;
-
-			// If we have content, initialize the editor.
-			if ( init.content ) {
-				editor.setContent( init.content );
-			}
+			const initConfig = ${ JSON.stringify( config ) };
+			window.init( initConfig );
 
 			// Ensure string evaluates to true.
 			true;
@@ -304,7 +321,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 						originWhitelist={['*']}
 						scrollEnabled={ false }
 						source={ { uri: editorUri } }
-						style={ styles.webView }
+						style={ [ styles.webView, this.props.webViewStyle ] }
 						onMessage={ this.onMessage }
 					/>
 				</View>
@@ -332,11 +349,10 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 					inSafeAreaView
 					style={ styles.toolbar }
 				>
-					{ ( ! this.state.showingFormat && ! this.state.showingLink ) ? (
+					{ ! this.state.showingFormat ? (
 						children( {
 							onCommand: this.onCommand,
 							onShowFormat: this.onShowFormat,
-							onShowLink: this.onShowLink,
 						} )
 					) : null }
 				</KeyboardAccessoryView>

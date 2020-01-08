@@ -24,112 +24,143 @@ const sendStatus = () => {
 	}
 };
 
-tinymce.init( {
-	target: document.getElementById( 'editor' ),
+const CORE_CSS = `
+	.mce-content-body.empty {
+		position: relative;
+	}
+	.mce-content-body.empty::before {
+		opacity: 0.35;
+		display: block;
+		position: absolute;
+		content: attr( data-placeholder );
+	}
+`;
 
-	// Remove all UI.
-	menubar: false,
-	statusbar: false,
-	toolbar: false,
-	theme: false,
-	skin: false,
+window.init = config => {
+	const textarea = document.getElementById( 'editor' );
 
-	// Reset content styles.
-	content_css: false,
+	tinymce.init( {
+		target: textarea,
 
-	// No need for inputs.
-	hidden_input: false,
+		// Remove all UI.
+		menubar: false,
+		statusbar: false,
+		toolbar: false,
+		theme: false,
+		skin: false,
 
-	// Add some basic plugins.
-	plugins: [
-		'link',
-		'lists',
-	],
-} ).then( editors => {
-	const editor = editors[0];
-	window.tinyEditor = editor;
+		// Reset content styles.
+		content_css: false,
+		content_style: CORE_CSS + ( config.content_style || '' ),
 
-	// Add our custom class to the editor container.
-	editor.editorContainer.className = 'editor-wrap';
+		// No need for inputs.
+		hidden_input: false,
 
-	editor.on( 'NodeChange', ( api ) => {
-		// Find the nearest list item.
-		for ( let i = 0; i < api.parents.length; i++ ) {
-			if ( api.parents[ i ].tagName !== 'LI' ) {
-				continue;
+		// Add some basic plugins.
+		plugins: [
+			'link',
+			'lists',
+		],
+	} ).then( editors => {
+		const editor = editors[0];
+		window.tinyEditor = editor;
+
+		// Add our custom class to the editor container.
+		editor.editorContainer.className = 'editor-wrap';
+
+		editor.on( 'NodeChange', api => {
+			// Find the nearest list item.
+			for ( let i = 0; i < api.parents.length; i++ ) {
+				if ( api.parents[ i ].tagName !== 'LI' ) {
+					continue;
+				}
+
+				// Found a list item, check the parent.
+				const parentIndex = i + 1;
+				if ( parentIndex >= api.parents.length ) {
+					continue;
+				}
+
+				const parent = api.parents[ parentIndex ];
+				switch ( parent.tagName ) {
+					case 'UL':
+					case 'OL':
+						status = {
+							...status,
+							paraType: parent.tagName.toLowerCase(),
+						};
+						sendStatus();
+						break;
+
+					default:
+						break;
+				}
 			}
+		} );
 
-			// Found a list item, check the parent.
-			const parentIndex = i + 1;
-			if ( parentIndex >= api.parents.length ) {
-				continue;
-			}
+		const formats = [
+			'bold',
+			'italic',
+			'underline',
+			'strikethrough',
+		];
+		formats.forEach( format => {
+			editor.formatter.formatChanged( format, value => {
+				status = {
+					...status,
+					[ format ]: value,
+				};
+				sendStatus();
+			}, true );
+		} );
 
-			const parent = api.parents[ parentIndex ];
-			switch ( parent.tagName ) {
-				case 'UL':
-				case 'OL':
-					status = {
-						...status,
-						paraType: parent.tagName.toLowerCase(),
-					};
-					sendStatus();
-					break;
+		const paraType = [
+			'p',
+			'blockquote',
+			'h1',
+			'h2',
+			'pre',
+			'UL',
+			'OL',
+		];
+		paraType.forEach( type => {
+			editor.formatter.formatChanged( type, value => {
+				if ( ! value ) {
+					return;
+				}
 
-				default:
-					break;
-			}
-		}
-	} );
+				status = {
+					...status,
+					paraType: type,
+				};
+				sendStatus();
+			} );
+		} );
 
-	const formats = [
-		'bold',
-		'italic',
-		'underline',
-		'strikethrough',
-	];
-	formats.forEach( format => {
-		editor.formatter.formatChanged( format, value => {
+		// Subscribe to undo/redo state.
+		editor.on( 'Undo Redo AddUndo TypingUndo ClearUndos SwitchMode', () => {
 			status = {
 				...status,
-				[ format ]: value,
-			};
-			sendStatus();
-		}, true );
-	} );
-
-	const paraType = [
-		'p',
-		'blockquote',
-		'h1',
-		'h2',
-		'pre',
-		'UL',
-		'OL',
-	];
-	paraType.forEach( type => {
-		editor.formatter.formatChanged( type, value => {
-			if ( ! value ) {
-				return;
-			}
-
-			status = {
-				...status,
-				paraType: type,
+				undo: {
+					hasUndo: editor.undoManager.hasUndo(),
+					hasRedo: editor.undoManager.hasRedo(),
+				},
 			};
 			sendStatus();
 		} );
-	} );
 
-	// Subscribe to undo/redo state.
-	editor.on( 'Undo Redo AddUndo TypingUndo ClearUndos SwitchMode', () => {
-		status = {
-			...status,
-			undo: {
-				hasUndo: editor.undoManager.hasUndo(),
-				hasRedo: editor.undoManager.hasRedo(),
-			},
-		};
-		sendStatus();
+		if ( config.placeholder ) {
+			editor.getBody().dataset.placeholder = config.placeholder;
+		}
+
+		// If we have content, initialize the editor.
+		if ( config.content && config.content.length > 0 ) {
+			editor.setContent( config.content );
+		} else {
+			editor.getBody().classList.add( 'empty' );
+			editor.once( 'focus', () => {
+				editor.getBody().classList.remove( 'empty' );
+			} );
+		}
 	} );
-} );
+};
