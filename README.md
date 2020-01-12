@@ -4,6 +4,25 @@ HTML WYSIWYG for React Native, in pure JS. (Works in Expo apps!)
 
 Combine the power of TinyMCE with the usability of native UI.
 
+## Demo
+
+A demo of the editor is included in this repo. You can run this in the iOS Simulator or on your native device using [Expo](https://docs.expo.io/versions/v36.0.0/get-started/installation/#2-mobile-app-expo-client-for-ios) in minutes.
+
+```sh
+# Clone down this repo.
+git clone https://github.com/rmccue/react-native-tinymce.git
+cd react-native-tinymce
+
+# Install dependencies.
+npm install
+
+# Build the app using Expo.
+npm start
+```
+
+Once the app has started, follow the instructions in the build tool to run in the simulator or on-device.
+
+
 ## Usage
 
 ```jsx
