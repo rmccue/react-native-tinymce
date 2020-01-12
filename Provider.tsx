@@ -19,14 +19,14 @@ import { EditorEvent, EditorState } from './types';
  */
 const KEYBOARD_DEBOUNCE = 100;
 
-interface EditorProps {
+interface ProviderProps {
 	/**
 	 * Render prop for the toolbar.
 	 */
 	children: ReactChild;
 }
 
-export default class Editor extends React.Component<EditorProps, EditorState> {
+export default class Provider extends React.Component<ProviderProps, EditorState> {
 	state: EditorState = defaultValue.state;
 
 	private keyboardShowListener: EmitterSubscription = null;

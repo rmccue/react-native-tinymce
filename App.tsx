@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 import Content from './Content';
-import EditorProvider from './Editor';
+import EditorProvider from './Provider';
 import Tools from './Tools';
 
 const styles = StyleSheet.create( {
