@@ -35,7 +35,7 @@ interface EditorProps {
 	/**
 	 * Styles to apply to the web view.
 	 */
-	webViewStyle?: StyleProp<ViewStyle>;
+	style?: StyleProp<ViewStyle>;
 
 	/**
 	 * Initial HTML content for the editor.
@@ -49,7 +49,7 @@ export default class Editor extends React.Component<EditorProps> {
 
 	static defaultProps: EditorProps = {
 		contentCss: 'body { font-family: sans-serif; }',
-		webViewStyle: null,
+		style: null,
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -89,7 +89,7 @@ export default class Editor extends React.Component<EditorProps> {
 				originWhitelist={['*']}
 				scrollEnabled={ false }
 				source={ { uri: editorUri } }
-				style={ [ styles.webView, this.props.webViewStyle ] }
+				style={ [ styles.webView, this.props.style ] }
 				onMessage={ this.context.onMessage }
 			/>
 		);
