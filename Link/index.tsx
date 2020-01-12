@@ -15,7 +15,7 @@ import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 
 import { EditorStatus } from '../types';
 
-const HEIGHT_DIALOG = 220;
+const HEIGHT_DIALOG = 140;
 
 const styles = StyleSheet.create( {
 	backdrop: {
@@ -109,7 +109,6 @@ const Label = ( { title } ) => (
 export default class Link extends React.Component<LinkProps> {
 	state = {
 		url: '',
-		text: '',
 		newTab: false,
 	}
 
@@ -198,16 +197,6 @@ export default class Link extends React.Component<LinkProps> {
 								textContentType="URL"
 								value={ this.state.url }
 								onChangeText={ url => this.setState( { url } ) }
-								onSubmitEditing={ this.onSave }
-							/>
-						</Row>
-						<Row>
-							<Label title="Link text" />
-							<TextInput
-								placeholder="Link text"
-								style={ styles.textInput }
-								value={ this.state.text }
-								onChangeText={ text => this.setState( { text } ) }
 								onSubmitEditing={ this.onSave }
 							/>
 						</Row>
