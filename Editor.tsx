@@ -113,6 +113,10 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 				hasUndo: false,
 				hasRedo: false,
 			},
+			link: {
+				href: null,
+				target: null,
+			},
 		},
 	}
 

@@ -8,6 +8,10 @@ export interface EditorStatus {
 		hasUndo: boolean,
 		hasRedo: boolean,
 	},
+	link: {
+		href: string | null;
+		target: string | null;
+	}
 }
 
 export interface BaseEditorEvent {
