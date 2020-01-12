@@ -24,7 +24,7 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-interface ContentProps {
+interface EditorProps {
 	/**
 	 * CSS to apply to the HTML content inside the editor.
 	 *
@@ -48,11 +48,11 @@ interface ContentProps {
 	value?: string;
 }
 
-export default class Content extends React.Component<ContentProps> {
+export default class Editor extends React.Component<EditorProps> {
 	declare context: React.ContextType<typeof EditorContext>;
 	static contextType = EditorContext;
 
-	static defaultProps: ContentProps = {
+	static defaultProps: EditorProps = {
 		contentCss: 'body { font-family: sans-serif; }',
 		webViewStyle: null,
 	}

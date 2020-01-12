@@ -7,7 +7,7 @@ import {
 	View
 } from 'react-native';
 
-import Content from './Content';
+import Editor from './Editor';
 import EditorProvider from './Provider';
 import Tools from './Tools';
 
@@ -28,7 +28,7 @@ export default class App extends React.Component {
 		content: '',
 	}
 
-	editor: Content = null;
+	editor: Editor = null;
 
 	componentDidMount() {
 		Font.loadAsync( {
@@ -52,7 +52,7 @@ export default class App extends React.Component {
 							title="Get Content"
 							onPress={ this.getContent }
 						/>
-						<Content
+						<Editor
 							ref={ ref => this.editor = ref }
 							placeholder="Start writing…"
 							value={ this.state.content }
