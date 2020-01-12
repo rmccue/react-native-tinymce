@@ -1,3 +1,4 @@
+import icons from '@rmccue/sfsymbols';
 import React from 'react';
 import {
 	Animated,
@@ -14,7 +15,6 @@ import Group from './Group';
 import GroupButton from './GroupButton';
 import ParagraphFormatButton from './ParagraphFormatButton';
 import Icon from '../Icon';
-import icons from '../icons';
 import { EditorStatus } from '../types';
 
 const HEIGHT_BUMPER = 15;

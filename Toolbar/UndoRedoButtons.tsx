@@ -1,8 +1,8 @@
+import icons from '@rmccue/sfsymbols';
 import React from 'react';
 
 import Button from './Button';
 import { EditorChildrenProps } from '../Editor';
-import icons from '../icons';
 
 export default function FormatButton( props: EditorChildrenProps ) {
 	return (

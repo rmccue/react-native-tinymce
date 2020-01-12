@@ -1,3 +1,4 @@
+import icons from '@rmccue/sfsymbols';
 import React from 'react';
 
 import Button from './Button';
@@ -7,7 +8,7 @@ export default function FormatButton( props: EditorChildrenProps ) {
 	return (
 		<Button
 			fallback="¶"
-			icon="􀅒"
+			icon={ icons.textformat }
 			label="Format"
 			onPress={ props.onShowFormat }
 		/>
