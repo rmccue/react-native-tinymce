@@ -51,7 +51,7 @@ interface EditorState {
 }
 
 export interface EditorChildrenProps {
-	onCommand( ...args ): void;
+	onCommand( commandId: string, showUI?: boolean, value?: any ): void;
 	onShowFormat(): void;
 	onShowLink(): void;
 }
