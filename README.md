@@ -27,19 +27,32 @@ Once the app has started, follow the instructions in the build tool to run in th
 
 ```jsx
 import React from 'react';
-import { Editor } from 'react-native-tinymce';
+import { Editor, Provider, Tools } from 'react-native-tinymce';
 
 const MyEditor = props => (
-	<Editor
-		ref={ ref => this.editor = ref }
-		value="<p>Hello world!</p>"
-	/>
+	<Provider>
+		<Editor
+			ref={ ref => this.editor = ref }
+			value="<p>Hello world!</p>"
+		/>
+
+		<Tools />
+	</Provider>
 )
 ```
 
-Pass the initial HTML content as the `value` prop.
+Place the Editor component wherever you want the main WYSIWYG editor view.
 
-To retrieve the content from the editor, call the `getContent()` method on the editor instance. This returns a promise which will resolve to the HTML string.
+The `Tools` component must be placed in the view-root of the current screen, as it uses absolute positioning to attach to the keyboard.
+
+The `Provider` must be a common ancestor to both the `Editor` and the `Tools` components; typically as a wrapper around your `SafeAreaView` or similar root.
+
+
+### Props
+
+Pass the initial HTML content as the `value` prop to `Editor`.
+
+To retrieve the content from the editor, call the `getContent()` method on the `Editor` instance. This returns a promise which will resolve to the HTML string.
 
 Avoid changing the `value` prop too often, as it causes TinyMCE to re-parse and re-render the value unnecessarily.
 
@@ -48,7 +61,9 @@ Avoid changing the `value` prop too often, as it causes TinyMCE to re-parse and 
 
 The main component is the Editor component. This renders a TinyMCE-based WYSIWYG into a webview, and sets up the interactions with it.
 
-When focussed on the WYSIWYG, the Editor component renders the toolbar as a keyboard accessory view.
+The Provider component contains the bulk of the logic for the editor, and it tracks state and actions. These are provided to the Editor and Tools components via context.
+
+When focussed on the WYSIWYG, the Tools component renders the toolbar as a keyboard accessory view.
 
 The toolbar can be overridden via the `children` render prop, and by default renders the included Toolbar component. Override this prop to add additional buttons as needed.
 
