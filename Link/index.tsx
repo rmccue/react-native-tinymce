@@ -86,11 +86,10 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-interface ToolbarProps {
+interface LinkProps {
 	status: EditorStatus;
 	style?: StyleProp<ViewStyle> | null;
-	visible: boolean;
-	onCommand: ( ...args: Array<string | boolean | null> ) => void;
+	onCommand: ( commandId: string, showUI?: boolean, value?: any ) => void;
 	onDismiss: () => void;
 	onFormat: ( type: string ) => void;
 }
@@ -107,7 +106,7 @@ const Label = ( { title } ) => (
 	</View>
 );
 
-export default class Link extends React.Component<ToolbarProps> {
+export default class Link extends React.Component<LinkProps> {
 	state = {
 		url: '',
 		text: '',
