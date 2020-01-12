@@ -5,6 +5,7 @@ export default {
 	'italic': '􀅔',
 	'decrease.indent': '􀋶',
 	'increase.indent': '􀋵',
+	'link': '􀉣',
 	'list.dash': '􀋱',
 	'list.bullet': '􀋲',
 	'list.number': '􀋴',

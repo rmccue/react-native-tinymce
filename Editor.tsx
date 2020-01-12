@@ -11,6 +11,7 @@ import {
 import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 
+import Link from './Link';
 import Formatter from './Formatter';
 import Toolbar from './Toolbar';
 import { EditorEvent, EditorStatus } from './types';
@@ -45,12 +46,14 @@ const styles = StyleSheet.create( {
 
 interface EditorState {
 	showingFormat: boolean;
+	showingLink: boolean;
 	textStatus: EditorStatus;
 }
 
 export interface EditorChildrenProps {
-	onCommand( ...args ): void;
+	onCommand( commandId: string, showUI?: boolean, value?: any ): void;
 	onShowFormat(): void;
+	onShowLink(): void;
 }
 
 interface EditorProps {
@@ -96,7 +99,10 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 	}
 
 	state: EditorState = {
+		// showingFormat: false,
 		showingFormat: false,
+		showingLink: false,
+		// showingLink: true,
 		textStatus: {
 			bold: false,
 			italic: false,
@@ -106,6 +112,10 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 			undo: {
 				hasUndo: false,
 				hasRedo: false,
+			},
+			link: {
+				href: null,
+				target: null,
 			},
 		},
 	}
@@ -227,12 +237,14 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		// Show the formatting tools.
 		this.setState( {
 			showingFormat: true,
+			showingLink: false,
 		} );
 	}
 
 	protected onDismissToolbar = () => {
 		this.setState( {
 			showingFormat: false,
+			showingLink: false,
 		} );
 
 		this.webref.injectJavaScript( `
@@ -270,6 +282,20 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		this.webref.injectJavaScript( `
 			tinymce.activeEditor.setContent( ${ JSON.stringify( content ) } );
 		` );
+	}
+
+	protected onShowLink = () => {
+		if ( ! this.webref ) {
+			return;
+		}
+
+		// Preserve selection.
+		this.webref.injectJavaScript( "document.activeElement.blur()" );
+
+		this.setState( {
+			showingFormat: false,
+			showingLink: true,
+		} );
 	}
 
 	protected getInitScript() {
@@ -316,19 +342,29 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 					onFormat={ this.onFormat }
 				/>
 
-				<KeyboardAccessoryView
-					avoidKeyboard
-					hideBorder
-					inSafeAreaView
-					style={ styles.toolbar }
-				>
-					{ ! this.state.showingFormat ? (
-						children( {
-							onCommand: this.onCommand,
-							onShowFormat: this.onShowFormat,
-						} )
-					) : null }
-				</KeyboardAccessoryView>
+				{ this.state.showingLink ? (
+					<Link
+						status={ this.state.textStatus }
+						onCommand={ this.onCommand }
+						onDismiss={ this.onDismissToolbar }
+						onFormat={ this.onFormat }
+					/>
+				) : (
+					<KeyboardAccessoryView
+						avoidKeyboard
+						hideBorder
+						inSafeAreaView
+						style={ styles.toolbar }
+					>
+						{ ! this.state.showingFormat ? (
+							children( {
+								onCommand: this.onCommand,
+								onShowFormat: this.onShowFormat,
+								onShowLink: this.onShowLink,
+							} )
+						) : null }
+					</KeyboardAccessoryView>
+				) }
 			</>
 		);
 	}

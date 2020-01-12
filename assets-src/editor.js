@@ -1,6 +1,7 @@
 import tinymce from 'tinymce';
 
 // Import appropriate dependencies.
+import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
 
 let status = {
@@ -12,6 +13,10 @@ let status = {
 	undo: {
 		hasUndo: false,
 		hasRedo: false,
+	},
+	link: {
+		href: null,
+		target: null,
 	},
 };
 const sendStatus = () => {
@@ -57,6 +62,7 @@ window.init = config => {
 
 		// Add some basic plugins.
 		plugins: [
+			'link',
 			'lists',
 		],
 	} ).then( editors => {
@@ -135,14 +141,31 @@ window.init = config => {
 			} );
 		} );
 
-		// Subscribe to undo/redo state.
-		editor.on( 'Undo Redo AddUndo TypingUndo ClearUndos SwitchMode', () => {
+		const getLinkStatus = () => {
+			const selected = editor.selection.getNode();
+			if ( ! selected ) {
+				return {
+					href: null,
+					target: null,
+				};
+			}
+
+			const anchor = editor.dom.getParent( selected, 'a[href]' );
+			return {
+				href: anchor ? editor.dom.getAttrib( anchor, 'href' ) : null,
+				target: anchor ? editor.dom.getAttrib( anchor, 'target' ) : null,
+			};
+		};
+
+		// Subscribe to events.
+		editor.on( 'Undo Redo AddUndo TypingUndo ClearUndos SwitchMode SelectionChange', () => {
 			status = {
 				...status,
 				undo: {
 					hasUndo: editor.undoManager.hasUndo(),
 					hasRedo: editor.undoManager.hasRedo(),
 				},
+				link: getLinkStatus(),
 			};
 			sendStatus();
 		} );
