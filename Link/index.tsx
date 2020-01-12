@@ -94,7 +94,7 @@ interface LinkProps {
 	onFormat: ( type: string ) => void;
 }
 
-const Row = ( { children, style }) => (
+const Row = ( { children, style = null } ) => (
 	<View style={ [ styles.fieldRow, style ] }>
 		{ children }
 	</View>
