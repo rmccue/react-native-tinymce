@@ -6,6 +6,7 @@ import {
 
 import { EditorChildrenProps } from '../Editor';
 import FormatButton from './FormatButton';
+import LinkButton from './LinkButton';
 import UndoRedoButtons from './UndoRedoButtons';
 
 const styles = StyleSheet.create( {
@@ -22,6 +23,9 @@ export default function Toolbar( props: EditorChildrenProps ) {
 				{ ...props }
 			/>
 			<FormatButton
+				{ ...props }
+			/>
+			<LinkButton
 				{ ...props }
 			/>
 		</View>
