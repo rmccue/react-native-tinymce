@@ -123,13 +123,43 @@ export default class Link extends React.Component<ToolbarProps> {
 		);
 	}
 
+	onCancel = () => {
+		this.props.onDismiss();
+	}
+
+	onSave = () => {
+		if ( ! this.state.url ) {
+			return;
+		}
+
+		const value = {
+			href: this.state.url,
+			target: this.state.newTab ? '_blank' : null,
+		};
+		this.props.onCommand( 'mceInsertLink', false, value );
+	}
+
+	onToggleNewTab = ( value: boolean ) => {
+		this.setState( {
+			newTab: value,
+		}, () => {
+			// If we have a URL, also trigger save.
+			this.onSave();
+		} );
+	}
+
+	onRemoveLink = () => {
+		this.props.onCommand( 'unlink' );
+		this.props.onDismiss();
+	}
+
 	render() {
 		const { style, onCommand, onDismiss, onFormat } = this.props;
 
 		return (
 			<>
 				<TouchableWithoutFeedback
-					onPress={ onDismiss }
+					onPress={ this.onCancel }
 				>
 					<View
 						style={ styles.backdrop }
@@ -155,6 +185,7 @@ export default class Link extends React.Component<ToolbarProps> {
 								textContentType="URL"
 								value={ this.state.url }
 								onChangeText={ url => this.setState( { url } ) }
+								onSubmitEditing={ this.onSave }
 							/>
 						</Row>
 						<Row>
@@ -164,6 +195,7 @@ export default class Link extends React.Component<ToolbarProps> {
 								style={ styles.textInput }
 								value={ this.state.text }
 								onChangeText={ text => this.setState( { text } ) }
+								onSubmitEditing={ this.onSave }
 							/>
 						</Row>
 						<Row>
@@ -171,7 +203,7 @@ export default class Link extends React.Component<ToolbarProps> {
 							<View style={ styles.switchWrap }>
 								<Switch
 									value={ this.state.newTab }
-									onValueChange={ newTab => this.setState( { newTab } ) }
+									onValueChange={ this.onToggleNewTab }
 								/>
 							</View>
 						</Row>
