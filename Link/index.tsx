@@ -167,6 +167,7 @@ export default class Link extends React.Component<LinkProps> {
 				</TouchableWithoutFeedback>
 
 				<KeyboardAccessoryView
+					alwaysVisible
 					avoidKeyboard
 					hideBorder
 					inSafeAreaView
