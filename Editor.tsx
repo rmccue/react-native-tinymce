@@ -89,7 +89,7 @@ export default class Editor extends React.Component<EditorProps> {
 				originWhitelist={['*']}
 				scrollEnabled={ false }
 				source={ { uri: editorUri } }
-				style={ [ styles.webView, this.props.style ] }
+				style={ StyleSheet.flatten( [ styles.webView, this.props.style ] ) }
 				onMessage={ this.context.onMessage }
 			/>
 		);
