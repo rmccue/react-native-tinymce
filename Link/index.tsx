@@ -113,6 +113,18 @@ export default class Link extends React.Component<LinkProps> {
 		newTab: false,
 	}
 
+	constructor( props: LinkProps ) {
+		super( props );
+
+		// Hook up to current link element.
+		if ( props.status.link.href ) {
+			this.state.url = props.status.link.href;
+		}
+		if ( props.status.link.target ) {
+			this.state.newTab = props.status.link.target === '_blank';
+		}
+	}
+
 	componentDidUpdate() {
 		LayoutAnimation.configureNext(
 			LayoutAnimation.create(
