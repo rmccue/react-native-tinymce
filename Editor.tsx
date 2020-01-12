@@ -14,7 +14,7 @@ import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import Link from './Link';
 import Formatter from './Formatter';
 import Toolbar from './Toolbar';
-import { EditorEvent, EditorStatus } from './types';
+import { EditorChildrenProps, EditorEvent, EditorStatus } from './types';
 
 /**
  * Time to debounce a keyboard show event.
@@ -48,12 +48,6 @@ interface EditorState {
 	showingFormat: boolean;
 	showingLink: boolean;
 	textStatus: EditorStatus;
-}
-
-export interface EditorChildrenProps {
-	onCommand( commandId: string, showUI?: boolean, value?: any ): void;
-	onShowFormat(): void;
-	onShowLink(): void;
 }
 
 interface EditorProps {

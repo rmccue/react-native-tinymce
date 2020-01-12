@@ -32,3 +32,9 @@ export interface GetContentEvent extends BaseEditorEvent {
 }
 
 export type EditorEvent = UpdateStatusEvent | GetContentEvent;
+
+export interface EditorChildrenProps {
+	onCommand( commandId: string, showUI?: boolean, value?: any ): void;
+	onShowFormat(): void;
+	onShowLink(): void;
+}
