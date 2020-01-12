@@ -341,21 +341,21 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 						onDismiss={ this.onDismissToolbar }
 						onFormat={ this.onFormat }
 					/>
-				) : null }
-
-				<KeyboardAccessoryView
-					avoidKeyboard
-					hideBorder
-					inSafeAreaView
-					style={ styles.toolbar }
-				>
-					{ ! this.state.showingFormat ? (
-						children( {
-							onCommand: this.onCommand,
-							onShowFormat: this.onShowFormat,
-						} )
-					) : null }
-				</KeyboardAccessoryView>
+				) : (
+					<KeyboardAccessoryView
+						avoidKeyboard
+						hideBorder
+						inSafeAreaView
+						style={ styles.toolbar }
+					>
+						{ ! this.state.showingFormat ? (
+							children( {
+								onCommand: this.onCommand,
+								onShowFormat: this.onShowFormat,
+							} )
+						) : null }
+					</KeyboardAccessoryView>
+				) }
 			</>
 		);
 	}
