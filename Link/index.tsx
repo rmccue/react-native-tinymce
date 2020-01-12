@@ -148,14 +148,12 @@ export default class Link extends React.Component<LinkProps> {
 			target: this.state.newTab ? '_blank' : null,
 		};
 		this.props.onCommand( 'mceInsertLink', false, value );
+		this.props.onDismiss();
 	}
 
 	onToggleNewTab = ( value: boolean ) => {
 		this.setState( {
 			newTab: value,
-		}, () => {
-			// If we have a URL, also trigger save.
-			this.onSave();
 		} );
 	}
 
@@ -191,6 +189,7 @@ export default class Link extends React.Component<LinkProps> {
 								autoCorrect={ false }
 								keyboardType="url"
 								placeholder="example.com"
+								returnKeyType="done"
 								style={ styles.textInput }
 								textContentType="URL"
 								value={ this.state.url }
