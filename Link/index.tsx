@@ -6,6 +6,7 @@ import {
 	Switch,
 	Text,
 	TextInput,
+	TouchableOpacity,
 	TouchableWithoutFeedback,
 	View,
 	ViewStyle,
@@ -207,11 +208,15 @@ export default class Link extends React.Component<ToolbarProps> {
 								/>
 							</View>
 						</Row>
-						<View style={ styles.remove }>
-							<Text style={ styles.removeText }>
-								Remove link
-							</Text>
-						</View>
+						<TouchableOpacity
+							onPress={ this.onRemoveLink }
+						>
+							<View style={ styles.remove }>
+								<Text style={ styles.removeText }>
+									Remove link
+								</Text>
+							</View>
+						</TouchableOpacity>
 					</View>
 				</KeyboardAccessoryView>
 			</>
