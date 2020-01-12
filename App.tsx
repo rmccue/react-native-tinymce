@@ -7,7 +7,9 @@ import {
 	View
 } from 'react-native';
 
-import Editor from './Editor';
+import Content from './Content';
+import EditorProvider from './Editor';
+import Tools from './Tools';
 
 const styles = StyleSheet.create( {
 	safeArea: {
@@ -26,7 +28,7 @@ export default class App extends React.Component {
 		content: '',
 	}
 
-	editor: Editor = null;
+	editor: Content = null;
 
 	componentDidMount() {
 		Font.loadAsync( {
@@ -41,21 +43,25 @@ export default class App extends React.Component {
 
 	render() {
 		return (
-			<SafeAreaView style={ styles.safeArea }>
-				<View
-					style={ styles.container }
-				>
-					<Button
-						title="Get Content"
-						onPress={ this.getContent }
-					/>
-					<Editor
-						ref={ ref => this.editor = ref }
-						placeholder="Start writing…"
-						value={ this.state.content }
-					/>
-				</View>
-			</SafeAreaView>
+			<EditorProvider>
+				<SafeAreaView style={ styles.safeArea }>
+					<View
+						style={ styles.container }
+					>
+						<Button
+							title="Get Content"
+							onPress={ this.getContent }
+						/>
+						<Content
+							ref={ ref => this.editor = ref }
+							placeholder="Start writing…"
+							value={ this.state.content }
+						/>
+
+						<Tools />
+					</View>
+				</SafeAreaView>
+			</EditorProvider>
 		);
 	}
 }
