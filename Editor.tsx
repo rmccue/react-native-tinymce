@@ -3,21 +3,16 @@ import React from 'react';
 import {
 	StyleSheet,
 	StyleProp,
-	View,
 	ViewStyle,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import EditorContext from './Context';
-import { EditorChildrenProps } from './types';
 
 const editorHtml = require( './assets/editor/editor.html' );
 const editorUri = Asset.fromModule( editorHtml ).uri;
 
 const styles = StyleSheet.create( {
-	container: {
-		flex: 1,
-	},
 	webView: {
 		flex: 1,
 		backgroundColor: '#fff',
@@ -86,19 +81,17 @@ export default class Editor extends React.Component<EditorProps> {
 
 	render() {
 		return (
-			<View style={ styles.container }>
-				<WebView
-					ref={ this.context.setWebViewRef }
-					hideKeyboardAccessoryView={ true }
-					injectedJavaScript={ this.getInitScript() }
-					keyboardDisplayRequiresUserAction={ false }
-					originWhitelist={['*']}
-					scrollEnabled={ false }
-					source={ { uri: editorUri } }
-					style={ [ styles.webView, this.props.webViewStyle ] }
-					onMessage={ this.context.onMessage }
-				/>
-			</View>
+			<WebView
+				ref={ this.context.setWebViewRef }
+				hideKeyboardAccessoryView={ true }
+				injectedJavaScript={ this.getInitScript() }
+				keyboardDisplayRequiresUserAction={ false }
+				originWhitelist={['*']}
+				scrollEnabled={ false }
+				source={ { uri: editorUri } }
+				style={ [ styles.webView, this.props.webViewStyle ] }
+				onMessage={ this.context.onMessage }
+			/>
 		);
 	}
 }
