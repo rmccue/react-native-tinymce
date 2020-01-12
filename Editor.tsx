@@ -285,6 +285,9 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 			return;
 		}
 
+		// Preserve selection.
+		this.webref.injectJavaScript( "document.activeElement.blur()" );
+
 		this.setState( {
 			showingFormat: false,
 			showingLink: true,
