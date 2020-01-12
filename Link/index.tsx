@@ -165,8 +165,6 @@ export default class Link extends React.Component<LinkProps> {
 	}
 
 	render() {
-		const { style, onCommand, onDismiss, onFormat } = this.props;
-
 		return (
 			<>
 				<TouchableWithoutFeedback
