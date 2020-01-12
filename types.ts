@@ -38,3 +38,9 @@ export interface EditorChildrenProps {
 	onShowFormat(): void;
 	onShowLink(): void;
 }
+
+export interface EditorState {
+	showingFormat: boolean;
+	showingLink: boolean;
+	textStatus: EditorStatus;
+}

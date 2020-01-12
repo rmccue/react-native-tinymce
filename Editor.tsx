@@ -1,20 +1,12 @@
-import { Asset } from 'expo-asset';
-import React from 'react';
+import React, { ReactChild } from 'react';
 import {
 	EmitterSubscription,
 	Keyboard,
-	StyleProp,
-	StyleSheet,
-	View,
-	ViewStyle,
 } from 'react-native';
-import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
-import { WebView, WebViewMessageEvent } from 'react-native-webview';
+import { WebViewMessageEvent } from 'react-native-webview';
 
-import Link from './Link';
-import Formatter from './Formatter';
-import Toolbar from './Toolbar';
-import { EditorChildrenProps, EditorEvent, EditorStatus } from './types';
+import EditorContext, { defaultValue, ContextValue } from './Context';
+import { EditorEvent, EditorState } from './types';
 
 /**
  * Time to debounce a keyboard show event.
@@ -27,92 +19,15 @@ import { EditorChildrenProps, EditorEvent, EditorStatus } from './types';
  */
 const KEYBOARD_DEBOUNCE = 100;
 
-const editorHtml = require( './assets/editor/editor.html' );
-const editorUri = Asset.fromModule( editorHtml ).uri;
-
-const styles = StyleSheet.create( {
-	container: {
-		flex: 1,
-	},
-	webView: {
-		flex: 1,
-		backgroundColor: '#fff',
-	},
-	toolbar: {
-		height: 50,
-		backgroundColor: '#f2f2f7',
-	},
-} );
-
-interface EditorState {
-	showingFormat: boolean;
-	showingLink: boolean;
-	textStatus: EditorStatus;
-}
-
 interface EditorProps {
-	/**
-	 * CSS to apply to the HTML content inside the editor.
-	 *
-	 * https://www.tiny.cloud/docs/configure/content-appearance/#content_style
-	 */
-	contentCss?: string;
-
-	/**
-	 * Styles to apply to the formatter.
-	 */
-	formatterStyle?: StyleProp<ViewStyle>;
-
 	/**
 	 * Render prop for the toolbar.
 	 */
-	children( props: EditorChildrenProps ): JSX.Element;
-
-	/**
-	 * Placeholder text to show in the field.
-	 */
-	placeholder?: string;
-
-	/**
-	 * Styles to apply to the web view.
-	 */
-	webViewStyle?: StyleProp<ViewStyle>;
-
-	/**
-	 * Initial HTML content for the editor.
-	 */
-	value?: string;
+	children: ReactChild;
 }
 
 export default class Editor extends React.Component<EditorProps, EditorState> {
-	static defaultProps: EditorProps = {
-		contentCss: 'body { font-family: sans-serif; }',
-		children: props => <Toolbar { ...props } />,
-		formatterStyle: null,
-		webViewStyle: null,
-	}
-
-	state: EditorState = {
-		// showingFormat: false,
-		showingFormat: false,
-		showingLink: false,
-		// showingLink: true,
-		textStatus: {
-			bold: false,
-			italic: false,
-			underline: false,
-			strikethrough: false,
-			paraType: 'p',
-			undo: {
-				hasUndo: false,
-				hasRedo: false,
-			},
-			link: {
-				href: null,
-				target: null,
-			},
-		},
-	}
+	state: EditorState = defaultValue.state;
 
 	private keyboardShowListener: EmitterSubscription = null;
 	private keyboardHideListener: EmitterSubscription = null;
@@ -125,18 +40,12 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		this.keyboardHideListener = Keyboard.addListener( 'keyboardDidHide', this.onKeyboardHide );
 	}
 
-	componentDidUpdate( prevProps ) {
-		if ( prevProps.value !== this.props.value ) {
-			this.onUpdateContent( this.props.value );
-		}
-	}
-
 	componentWillUnmount() {
 		this.keyboardShowListener.remove();
 		this.keyboardHideListener.remove();
 	}
 
-	public async getContent() {
+	public async getContent(): Promise<string> {
 		return new Promise( ( resolve, reject ) => {
 			this.resolveContent = resolve;
 
@@ -292,74 +201,26 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		} );
 	}
 
-	protected getInitScript() {
-		const config = {
-			content: this.props.value,
-			content_style: this.props.contentCss,
-			placeholder: this.props.placeholder || null,
-		};
-
-		return `
-			// Initialize the editor.
-			const initConfig = ${ JSON.stringify( config ) };
-			window.init( initConfig );
-
-			// Ensure string evaluates to true.
-			true;
-		`;
-	}
-
 	render() {
 		const { children } = this.props;
 
-		return (
-			<>
-				<View style={ styles.container }>
-					<WebView
-						ref={ this.setWebViewRef }
-						hideKeyboardAccessoryView={ true }
-						injectedJavaScript={ this.getInitScript() }
-						keyboardDisplayRequiresUserAction={ false }
-						originWhitelist={['*']}
-						scrollEnabled={ false }
-						source={ { uri: editorUri } }
-						style={ [ styles.webView, this.props.webViewStyle ] }
-						onMessage={ this.onMessage }
-					/>
-				</View>
-				<Formatter
-					status={ this.state.textStatus }
-					style={ this.props.formatterStyle }
-					visible={ this.state.showingFormat }
-					onCommand={ this.onCommand }
-					onDismiss={ this.onDismissToolbar }
-					onFormat={ this.onFormat }
-				/>
+		const value: ContextValue = {
+			state: this.state,
+			getContent: this.getContent,
+			setWebViewRef: this.setWebViewRef,
+			onCommand: this.onCommand,
+			onDismissToolbar: this.onDismissToolbar,
+			onFormat: this.onFormat,
+			onMessage: this.onMessage,
+			onShowFormat: this.onShowFormat,
+			onShowLink: this.onShowLink,
+			onUpdateContent: this.onUpdateContent,
+		};
 
-				{ this.state.showingLink ? (
-					<Link
-						status={ this.state.textStatus }
-						onCommand={ this.onCommand }
-						onDismiss={ this.onDismissToolbar }
-						onFormat={ this.onFormat }
-					/>
-				) : (
-					<KeyboardAccessoryView
-						avoidKeyboard
-						hideBorder
-						inSafeAreaView
-						style={ styles.toolbar }
-					>
-						{ ! this.state.showingFormat ? (
-							children( {
-								onCommand: this.onCommand,
-								onShowFormat: this.onShowFormat,
-								onShowLink: this.onShowLink,
-							} )
-						) : null }
-					</KeyboardAccessoryView>
-				) }
-			</>
+		return (
+			<EditorContext.Provider value={ value }>
+				{ children }
+			</EditorContext.Provider>
 		);
 	}
 }
