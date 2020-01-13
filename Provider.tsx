@@ -45,7 +45,7 @@ export default class Provider extends React.Component<ProviderProps, EditorState
 		this.keyboardHideListener.remove();
 	}
 
-	public async getContent(): Promise<string> {
+	public getContent = async (): Promise<string> => {
 		return new Promise( ( resolve, reject ) => {
 			this.resolveContent = resolve;
 
