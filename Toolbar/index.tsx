@@ -4,10 +4,10 @@ import {
 	View,
 } from 'react-native';
 
-import { EditorChildrenProps } from '../Editor';
 import FormatButton from './FormatButton';
 import LinkButton from './LinkButton';
 import UndoRedoButtons from './UndoRedoButtons';
+import { EditorChildrenProps } from '../types';
 
 const styles = StyleSheet.create( {
 	container: {

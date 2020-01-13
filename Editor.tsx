@@ -1,60 +1,23 @@
 import { Asset } from 'expo-asset';
 import React from 'react';
 import {
-	EmitterSubscription,
-	Keyboard,
-	StyleProp,
 	StyleSheet,
-	View,
+	StyleProp,
 	ViewStyle,
 } from 'react-native';
-import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
-import { WebView, WebViewMessageEvent } from 'react-native-webview';
+import { WebView } from 'react-native-webview';
 
-import Link from './Link';
-import Formatter from './Formatter';
-import Toolbar from './Toolbar';
-import { EditorEvent, EditorStatus } from './types';
-
-/**
- * Time to debounce a keyboard show event.
- *
- * Experimentally tested on an iPhone 11 Pro, most events take 10-25ms to
- * execute, while some outliers occur around 50ms, with occasional events a
- * bit higher when lag occurs.
- *
- * 100ms should be plenty to cover all events including outliers.
- */
-const KEYBOARD_DEBOUNCE = 100;
+import EditorContext from './Context';
 
 const editorHtml = require( './assets/editor/editor.html' );
 const editorUri = Asset.fromModule( editorHtml ).uri;
 
 const styles = StyleSheet.create( {
-	container: {
-		flex: 1,
-	},
 	webView: {
 		flex: 1,
 		backgroundColor: '#fff',
 	},
-	toolbar: {
-		height: 50,
-		backgroundColor: '#f2f2f7',
-	},
 } );
-
-interface EditorState {
-	showingFormat: boolean;
-	showingLink: boolean;
-	textStatus: EditorStatus;
-}
-
-export interface EditorChildrenProps {
-	onCommand( commandId: string, showUI?: boolean, value?: any ): void;
-	onShowFormat(): void;
-	onShowLink(): void;
-}
 
 interface EditorProps {
 	/**
@@ -65,16 +28,6 @@ interface EditorProps {
 	contentCss?: string;
 
 	/**
-	 * Styles to apply to the formatter.
-	 */
-	formatterStyle?: StyleProp<ViewStyle>;
-
-	/**
-	 * Render prop for the toolbar.
-	 */
-	children( props: EditorChildrenProps ): JSX.Element;
-
-	/**
 	 * Placeholder text to show in the field.
 	 */
 	placeholder?: string;
@@ -82,7 +35,7 @@ interface EditorProps {
 	/**
 	 * Styles to apply to the web view.
 	 */
-	webViewStyle?: StyleProp<ViewStyle>;
+	style?: StyleProp<ViewStyle>;
 
 	/**
 	 * Initial HTML content for the editor.
@@ -90,212 +43,19 @@ interface EditorProps {
 	value?: string;
 }
 
-export default class Editor extends React.Component<EditorProps, EditorState> {
+export default class Editor extends React.Component<EditorProps> {
+	declare context: React.ContextType<typeof EditorContext>;
+	static contextType = EditorContext;
+
 	static defaultProps: EditorProps = {
 		contentCss: 'body { font-family: sans-serif; }',
-		children: props => <Toolbar { ...props } />,
-		formatterStyle: null,
-		webViewStyle: null,
-	}
-
-	state: EditorState = {
-		// showingFormat: false,
-		showingFormat: false,
-		showingLink: false,
-		// showingLink: true,
-		textStatus: {
-			bold: false,
-			italic: false,
-			underline: false,
-			strikethrough: false,
-			paraType: 'p',
-			undo: {
-				hasUndo: false,
-				hasRedo: false,
-			},
-			link: {
-				href: null,
-				target: null,
-			},
-		},
-	}
-
-	private keyboardShowListener: EmitterSubscription = null;
-	private keyboardHideListener: EmitterSubscription = null;
-	private keyboardTimer: number = null;
-	private resolveContent: ( content: string ) => void = null;
-	private webref = null;
-
-	componentDidMount() {
-		this.keyboardShowListener = Keyboard.addListener( 'keyboardWillShow', this.onKeyboardShow );
-		this.keyboardHideListener = Keyboard.addListener( 'keyboardDidHide', this.onKeyboardHide );
+		style: null,
 	}
 
 	componentDidUpdate( prevProps ) {
 		if ( prevProps.value !== this.props.value ) {
-			this.onUpdateContent( this.props.value );
+			this.context.onUpdateContent( this.props.value );
 		}
-	}
-
-	componentWillUnmount() {
-		this.keyboardShowListener.remove();
-		this.keyboardHideListener.remove();
-	}
-
-	public async getContent() {
-		return new Promise( ( resolve, reject ) => {
-			this.resolveContent = resolve;
-
-			this.webref.injectJavaScript( `
-				window.ReactNativeWebView.postMessage( JSON.stringify( {
-					type: 'getContent',
-					payload: {
-						html: tinymce.activeEditor.getContent(),
-					},
-				} ) );
-			` );
-		} );
-	}
-
-	protected setWebViewRef = ref => {
-		this.webref = ref;
-	}
-
-	/**
-	 * Hide the formatting pane, but debounce the event.
-	 *
-	 * When formatting is applied, TinyMCE internally triggers focus on the
-	 * contenteditable element, which triggers the keyboard. We then
-	 * hide it as soon as possible via the .blur() call in onCommand.
-	 *
-	 * By debouncing the event, we leave enough time for TinyMCE to do its
-	 * magic. For "real" keyboard events (i.e. user moves cursor or selects
-	 * another field), the keyboard takes ~250ms to show anyway, so a slight
-	 * delay doesn't have a huge visual impact.
-	 *
-	 * @see KEYBOARD_DEBOUNCE
-	 */
-	protected onKeyboardShow = e => {
-		this.keyboardTimer = window.setTimeout( () => {
-			this.keyboardTimer = null;
-			this.onDebouncedKeyboardShow( e );
-		}, KEYBOARD_DEBOUNCE );
-	}
-
-	/**
-	 * Cancel any keyboard timers if set.
-	 */
-	protected onKeyboardHide = e => {
-		if ( this.keyboardTimer ) {
-			window.clearTimeout( this.keyboardTimer );
-		}
-	}
-
-	/**
-	 * Hide the formatting pane if the keyboard is shown.
-	 *
-	 * @see onKeyboardShow
-	 */
-	protected onDebouncedKeyboardShow = e => {
-		if ( this.state.showingFormat ) {
-			this.setState( {
-				showingFormat: false,
-			} );
-		}
-	}
-
-	protected onMessage = ( event: WebViewMessageEvent ) => {
-		const data: EditorEvent = JSON.parse( event.nativeEvent.data );
-		switch ( data.type ) {
-			case 'updateStatus':
-				this.setState( {
-					textStatus: data.payload,
-				} );
-				break;
-
-			case 'getContent':
-				if ( ! this.resolveContent ) {
-					return;
-				}
-
-				this.resolveContent( data.payload.html );
-				break;
-
-			default:
-				return;
-		}
-	}
-
-	protected onShowFormat = () => {
-		if ( ! this.webref ) {
-			return;
-		}
-
-		// Hide the keyboard.
-		this.webref.injectJavaScript( "document.activeElement.blur()" );
-
-		// Show the formatting tools.
-		this.setState( {
-			showingFormat: true,
-			showingLink: false,
-		} );
-	}
-
-	protected onDismissToolbar = () => {
-		this.setState( {
-			showingFormat: false,
-			showingLink: false,
-		} );
-
-		this.webref.injectJavaScript( `
-			// Refocus the editor.
-			tinymce.activeEditor.focus();
-		` );
-	}
-
-	protected onCommand = ( commandId: string, showUI?: boolean, value?: string ) => {
-		const args = [ commandId, showUI, value ];
-		this.webref.injectJavaScript( `
-			// Execute the command first.
-			tinymce.activeEditor.execCommand(
-				...${ JSON.stringify( args ) }
-			);
-
-			// Hide the keyboard again.
-			document.activeElement.blur();
-		` );
-	}
-
-	protected onFormat = format => {
-		this.onCommand(
-			'mceToggleFormat',
-			false,
-			format
-		);
-	}
-
-	protected onUpdateContent = ( content: string ) => {
-		if ( ! this.webref ) {
-			return;
-		}
-
-		this.webref.injectJavaScript( `
-			tinymce.activeEditor.setContent( ${ JSON.stringify( content ) } );
-		` );
-	}
-
-	protected onShowLink = () => {
-		if ( ! this.webref ) {
-			return;
-		}
-
-		// Preserve selection.
-		this.webref.injectJavaScript( "document.activeElement.blur()" );
-
-		this.setState( {
-			showingFormat: false,
-			showingLink: true,
-		} );
 	}
 
 	protected getInitScript() {
@@ -315,57 +75,23 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
 		`;
 	}
 
+	public async getContent(): Promise<string> {
+		return await this.context.getContent();
+	}
+
 	render() {
-		const { children } = this.props;
-
 		return (
-			<>
-				<View style={ styles.container }>
-					<WebView
-						ref={ this.setWebViewRef }
-						hideKeyboardAccessoryView={ true }
-						injectedJavaScript={ this.getInitScript() }
-						keyboardDisplayRequiresUserAction={ false }
-						originWhitelist={['*']}
-						scrollEnabled={ false }
-						source={ { uri: editorUri } }
-						style={ [ styles.webView, this.props.webViewStyle ] }
-						onMessage={ this.onMessage }
-					/>
-				</View>
-				<Formatter
-					status={ this.state.textStatus }
-					style={ this.props.formatterStyle }
-					visible={ this.state.showingFormat }
-					onCommand={ this.onCommand }
-					onDismiss={ this.onDismissToolbar }
-					onFormat={ this.onFormat }
-				/>
-
-				{ this.state.showingLink ? (
-					<Link
-						status={ this.state.textStatus }
-						onCommand={ this.onCommand }
-						onDismiss={ this.onDismissToolbar }
-						onFormat={ this.onFormat }
-					/>
-				) : (
-					<KeyboardAccessoryView
-						avoidKeyboard
-						hideBorder
-						inSafeAreaView
-						style={ styles.toolbar }
-					>
-						{ ! this.state.showingFormat ? (
-							children( {
-								onCommand: this.onCommand,
-								onShowFormat: this.onShowFormat,
-								onShowLink: this.onShowLink,
-							} )
-						) : null }
-					</KeyboardAccessoryView>
-				) }
-			</>
+			<WebView
+				ref={ this.context.setWebViewRef }
+				hideKeyboardAccessoryView={ true }
+				injectedJavaScript={ this.getInitScript() }
+				keyboardDisplayRequiresUserAction={ false }
+				originWhitelist={['*']}
+				scrollEnabled={ false }
+				source={ { uri: editorUri } }
+				style={ StyleSheet.flatten( [ styles.webView, this.props.style ] ) }
+				onMessage={ this.context.onMessage }
+			/>
 		);
 	}
 }
