@@ -4,6 +4,7 @@
   "files": [
     "assets/editor/",
     "Formatter/",
+    "Link/",
     "Toolbar/",
     "*.tsx",
     "*.ts"
