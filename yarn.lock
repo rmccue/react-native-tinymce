@@ -6449,10 +6449,10 @@ tiny-queue@^0.2.1:
   resolved "https://registry.yarnpkg.com/tiny-queue/-/tiny-queue-0.2.1.tgz#25a67f2c6e253b2ca941977b5ef7442ef97a6046"
   integrity sha1-JaZ/LG4lOyypQZd7XvdELvl6YEY=
 
-tinymce@^5.1.5:
-  version "5.1.5"
-  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.1.5.tgz#08a4815bcefd33fb5f654b0b82b066f788a8ddf4"
-  integrity sha512-xl7rMhjxtDLWGXJF2ZNGv6Dxqy64HAQKSCvfcbfFuF+oJYRA1JqfNLfgS3yqG4D/V30adFWOZUv9Eng6l5BWOA==
+tinymce@^5.7.1:
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.7.1.tgz#658a6fb4c7d53a8496cc00f8da33f4b8290da06d"
+  integrity sha512-1gY8RClc734srSlkYwY0MQzmkS1j73PuPC+nYtNtrrQVPY9VNcZ4bOiRwzTbdjPPD8GOtv6BAk8Ww/H2RiqKpA==
 
 tmp@^0.0.33:
   version "0.0.33"

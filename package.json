@@ -20,7 +20,7 @@
   "dependencies": {
     "@rmccue/sfsymbols": "^0.0.2",
     "react-native-keyboard-accessory": "^0.1.10",
-    "tinymce": "^5.1.5"
+    "tinymce": "^5.7.1"
   },
   "peerDependencies": {
     "react": "~16.9.0",
